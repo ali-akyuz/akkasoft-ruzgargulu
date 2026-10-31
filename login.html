@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="RüzgarGülü yönetim paneli giriş ekranı." />
+  <title>Giriş Yap | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261029-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261029-10" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/login.css?v=20261029-3" />
+</head>
+
+<body>
+  <main class="login-page">
+    <a class="brand login-brand" href="./index.html" aria-label="RüzgarGülü ana sayfa">
+      <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+      <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol Sistemi</span></span>
+    </a>
+    <section class="login-card" aria-labelledby="login-title">
+      <p class="eyebrow cool">Hesap erişimi</p>
+      <h1 id="login-title">Giriş Yap</h1>
+      <p class="login-description">Operasyon ve kontrol paneline erişmek için bilgilerinizi girin.</p>
+      <form id="loginForm">
+        <label for="loginEmail">E-posta</label>
+        <input id="loginEmail" name="email" type="email" placeholder="ornek@akkasoft.com" autocomplete="username"
+          required />
+        <label for="loginPassword">Şifre</label>
+        <input id="loginPassword" name="password" type="password" placeholder="••••••••" autocomplete="current-password"
+          required />
+        <button class="primary-button login-submit" type="submit">Giriş Yap →</button>
+      </form>
+      <a class="login-back-link" href="./index.html">← Tanıtım sayfasına dön</a>
+    </section>
+  </main>
+  <script type="module" src="./js/login.js?v=20261029-2"></script>
+</body>
+
+</html>
