@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RüzgarGülü enerji üretim analizleri ve raporlama ekranı." />
+  <meta name="theme-color" content="#f5fafe" />
+  <title>Enerji Analizi | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261029-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261030-3" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/responsive.css?v=desktop-20261029-6" />
+  <link rel="stylesheet" href="./css/analytics-optimization.css?v=20261030-1" />
+</head>
+
+<body data-page="analytics">
+  <div class="app-shell">
+    <header class="topbar" aria-label="Uygulama üst bilgisi">
+      <a class="brand" href="./dashboard.html" aria-label="RüzgarGülü genel bakış">
+        <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol
+            Sistemi</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Ana menü">
+        <a class="nav-link" href="./dashboard.html">Genel Bakış</a>
+        <a class="nav-link active" href="./analytics.html" aria-current="page">Enerji Analizi</a>
+        <a class="nav-link" href="./fault-center.html">Arıza Kontrol Merkezi</a>
+        <a class="nav-link" href="./turbulence-center.html">Türbülans Merkezi</a>
+        <a class="nav-link" href="./simulasyon-merkezi.html">Simülasyon Merkezi</a>
+      </nav>
+      <div class="topbar-actions" aria-label="Sistem bilgileri">
+        <div class="notification-dropdown">
+          <button class="icon-button notification-button" type="button" aria-label="Bildirimleri aç"
+            aria-expanded="false" aria-controls="headerNotificationPanel">
+            <span class="icon-bell" aria-hidden="true">🔔</span><span class="badge" id="notificationBadge">0</span>
+          </button>
+          <section class="notification-popover" id="headerNotificationPanel" aria-label="Bildirimler" hidden>
+            <header class="notification-popover-header">
+              <div>
+                <h2>Bildirimler</h2>
+                <p id="headerNotificationSummary">Güncel uyarılar</p>
+              </div>
+              <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Tümünü okundu
+                işaretle</button>
+            </header>
+            <ul class="notification-popover-list" id="headerNotificationList" aria-live="polite"></ul>
+          </section>
+        </div>
+        <span class="login-button welcome-user" id="welcomeUser">Hoş Geldin, AKKA Soft</span>
+        <button class="logout-button" type="button" data-logout>Çıkış</button>
+      </div>
+    </header>
+    <main class="page-content">
+      <section class="section analytics-section" aria-labelledby="analytics-title">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow cool">Üretim ve performans</p>
+            <h1 id="analytics-title">Enerji Analizi</h1>
+            <p class="page-lede">Saha üretimini dönemlere göre karşılaştırın, performans eğilimlerini izleyin.</p>
+          </div>
+        </div>
+        <div class="metrics-grid" aria-label="Anlık saha göstergeleri">
+          <article class="metric-card">
+            <div class="metric-topline"><span class="metric-label">Anlık elektrik üretimi</span><span
+                class="metric-icon" aria-hidden="true">⚡</span></div>
+            <div class="metric-value-wrap"><strong class="metric-value" id="metricPowerValue">2,48 MW</strong><span
+                class="trend positive" id="metricPowerTrend">+8,2%</span></div>
+            <p class="metric-footer">Önceki döneme göre <span id="metricPowerCompare">+0,19 MW</span></p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-topline"><span class="metric-label">Anlık rüzgâr hızı</span><span class="metric-icon"
+                aria-hidden="true">〰</span></div>
+            <div class="metric-value-wrap"><strong class="metric-value" id="metricWindValue">8,6 m/s</strong><span
+                class="trend neutral" id="metricWindTrend">Dengeli</span></div>
+            <p class="metric-footer">Ölçülen ortalama saha hızı</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-topline"><span class="metric-label">Toplam üretilen enerji</span><span
+                class="metric-icon" aria-hidden="true">↗</span></div>
+            <div class="metric-value-wrap"><strong class="metric-value" id="metricEnergyValue">18.420 kWh</strong><span
+                class="trend positive" id="metricEnergyTrend">+11,4%</span></div>
+            <p class="metric-footer">Seçili raporlama dönemi: <span id="reportingPeriodLabel">Günlük</span></p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-topline"><span class="metric-label">Yüksek gerilim şebekesine aktarılan</span><span
+                class="metric-icon" aria-hidden="true">⇧</span></div>
+            <div class="metric-value-wrap"><strong class="metric-value" id="metricGridValue">16.870 kWh</strong><span
+                class="trend positive" id="metricGridTrend">91,2%</span></div>
+            <p class="metric-footer">Şebekeye aktarılan enerji</p>
+          </article>
+        </div>
+
+        <section class="revenue-panel" aria-labelledby="revenue-title">
+          <div class="card-header split-header">
+            <div>
+              <p class="panel-kicker">Finansal görünüm</p>
+              <h2 id="revenue-title">Elektrik Üretimi ve Gelir Analizi</h2>
+            </div>
+            <div class="revenue-controls">
+              <label class="turbine-select" for="revenueTurbineSelect">
+                <span>Türbin seçimi</span>
+                <select id="revenueTurbineSelect" aria-label="Gelir analizinde gösterilecek türbin">
+                  <option value="all">Tüm türbinler</option>
+                </select>
+              </label>
+              <label class="price-input" for="salePriceInput">
+                <span>Satış fiyatı</span>
+                <div class="price-field">
+                  <input id="salePriceInput" type="number" inputmode="decimal" min="0" step="0.01" value="3.00"
+                    aria-label="Elektrik satış fiyatı" />
+                  <span>₺/kWh</span>
+                </div>
+              </label>
+              <div class="period-switcher" role="group" aria-label="Gelir analiz dönemi">
+                <button class="period-button" data-period="hourly" type="button">Saatlik</button>
+                <button class="period-button active" data-period="daily" type="button">Günlük</button>
+                <button class="period-button" data-period="weekly" type="button">Haftalık</button>
+                <button class="period-button" data-period="monthly" type="button">Aylık</button>
+                <button class="period-button" data-period="yearly" type="button">Yıllık</button>
+              </div>
+            </div>
+          </div>
+          <p class="revenue-simulation-note">Türbin bazlı değerler simülasyon tahminidir; saha toplamı her türbinin
+            tahmini üretim payına göre dağıtılır.</p>
+          <div class="revenue-stat-grid" aria-label="Gelir kartları">
+            <article class="revenue-stat-card"><span class="metric-label" id="revenueProductionLabel">Toplam
+                üretim</span><strong id="revenueTotalProduction">18.420 kWh</strong></article>
+            <article class="revenue-stat-card"><span class="metric-label" id="revenueIncomeLabel">Tahmini toplam
+                gelir</span><strong id="revenueTotalIncome">₺55.260,00</strong></article>
+            <article class="revenue-stat-card"><span class="metric-label">Ortalama günlük gelir</span><strong
+                id="revenueAverageIncome">₺7.894,29</strong></article>
+            <article class="revenue-stat-card"><span class="metric-label">Birim satış fiyatı</span><strong
+                id="revenueUnitPrice">₺3,00</strong></article>
+            <article class="revenue-stat-card emphasis"><span class="metric-label">Önceki döneme göre
+                değişim</span><strong id="revenueChange">+11,4%</strong></article>
+          </div>
+          <div class="revenue-chart-shell">
+            <canvas id="revenueChart" aria-label="Gelir analizi grafiği" role="img"></canvas>
+            <div id="revenueChartTooltip" class="chart-tooltip" hidden></div>
+          </div>
+          <div class="chart-summary-grid" aria-label="Seçili dönemin gelir özeti">
+            <div class="summary-item"><span class="summary-label">Seçili dönem toplam gelir</span><strong
+                id="revenueSummaryPeriodValue">₺0,00</strong></div>
+            <div class="summary-item"><span class="summary-label">Seçili dönem</span><strong
+                id="revenueSummaryPeriod">Günlük</strong></div>
+            <div class="summary-item summary-item-wide"><span class="summary-label">Açıklama</span><strong
+                id="revenueSummaryText">Şebekeye verilen enerji üzerinden tahmin yapılmıştır.</strong></div>
+          </div>
+        </section>
+
+        <section class="optimization-card" id="windOptimization" aria-labelledby="windOptimizationHeading">
+          <header class="optimization-heading">
+            <div>
+              <p class="panel-kicker">Akıllı rüzgâr yönü · Karar destek sistemi</p>
+              <h2 id="windOptimizationHeading">Akıllı Rüzgâr Yönü ve Türbin Optimizasyonu</h2>
+              <p>Sektör açıları rüzgârın geldiği yönü, mevcut/önerilen açı ise türbin yaw yönünü gösterir. Tahmini
+                üretimi güvenlik ve risk eşikleriyle karşılaştırarak en verimli yönelimi belirleyin.</p>
+            </div>
+          </header>
+          <div class="optimization-layout">
+            <div class="optimization-controls">
+              <label class="optimization-field" for="optimizationTurbine">
+                <span>Yönetilen türbin</span>
+                <select id="optimizationTurbine" aria-label="Optimizasyon için yönetilen türbin"></select>
+              </label>
+              <label class="optimization-field" for="windScenario">
+                <span>Örnek rüzgâr senaryosu</span>
+                <select id="windScenario">
+                  <option value="normal">Normal · güncel saha ölçümü</option>
+                  <option value="attention">Dikkat · yön değişkenliği</option>
+                  <option value="high">Yüksek · sert hamle/değişim</option>
+                  <option value="critical">Kritik · güvenlik kesme eşiği</option>
+                  <option value="stale">Eski ölçüm · değerlendirilemez</option>
+                  <option value="incomplete">Eksik ölçüm · değerlendirilemez</option>
+                </select>
+              </label>
+              <div class="optimization-readouts">
+                <article><span>Mevcut yön</span><strong id="optimizationCurrentYaw">245° · Güneybatı</strong></article>
+                <article><span>Önerilen güvenli yön</span><strong id="optimizationRecommendedYaw">Hesaplanıyor…</strong>
+                </article>
+                <article><span>Mevcut yön tahmini</span><strong id="optimizationCurrentEnergy">—</strong></article>
+                <article><span>Öneri farkı</span><strong id="optimizationEnergyDelta">—</strong></article>
+              </div>
+              <p class="optimization-recommendation" id="optimizationReason" aria-live="polite"></p>
+              <div class="optimization-direction-actions" aria-label="Yönlendirme hedefi seç">
+                <button type="button" data-optimization-yaw="0">Kuzeye Yönlendir</button>
+                <button type="button" data-optimization-yaw="45">Kuzeydoğuya Yönlendir</button>
+                <button type="button" data-optimization-yaw="90">Doğuya Yönlendir</button>
+                <button type="button" data-optimization-yaw="135">Güneydoğuya Yönlendir</button>
+                <button type="button" data-optimization-yaw="180">Güneye Yönlendir</button>
+                <button type="button" data-optimization-yaw="225">Güneybatıya Yönlendir</button>
+                <button type="button" data-optimization-yaw="270">Batıya Yönlendir</button>
+                <button type="button" data-optimization-yaw="315">Kuzeybatıya Yönlendir</button>
+                <button type="button" class="optimization-recommended-action" id="useRecommendedYaw">En Verimli Yöne
+                  Yönlendir</button>
+              </div>
+              <p class="optimization-intent" id="optimizationIntent">İşlem seçin. Simülasyon, risk kontrolü ve onay
+                olmadan hareket etmez.</p>
+              <div class="optimization-layer-controls" aria-label="Teleskopik katman işlemleri">
+                <button type="button" data-layer-toggle="1">1. Kademeyi Aç</button>
+                <button type="button" data-layer-toggle="2">2. Kademeyi Aç</button>
+                <button type="button" data-layer-toggle="3">3. Kademeyi Aç</button>
+                <button type="button" data-layer-all="open">Tüm Kademeleri Aç</button>
+                <button type="button" data-layer-all="close">Tüm Kademeleri Kapat</button>
+              </div>
+              <div class="optimization-risk-actions">
+                <button type="button" class="optimization-risk-button" id="checkOptimizationRisk">İşlem Öncesi Türbülans
+                  Riskini Kontrol Et</button>
+                <button type="button" class="optimization-apply-button" id="applyOptimizationAction"
+                  disabled>Değerlendirmeye Göre İşlemi Uygula</button>
+              </div>
+              <p class="optimization-live-status" id="optimizationLiveStatus" role="status" aria-live="polite">Henüz bir
+                işlem seçilmedi.</p>
+              <p class="optimization-disclaimer">3–12–25 m/s güç eğrisi modeli ve IEC 61400-1 türbülans eşikleri baz
+                alınarak her sektör için optimum enerji verimi ve yapısal güvenlik dengesi hesaplanır.</p>
+            </div>
+            <div class="optimization-scene-panel">
+              <div class="optimization-scene-heading">
+                <div>
+                  <p class="panel-kicker">Ortak Three.js modeli</p>
+                  <h3><span id="optimizationTurbineTitle">WT-07</span> · Etkileşimli 3D simülasyonu</h3>
+                </div>
+                <button type="button" class="optimization-camera-reset" id="optimizationCameraReset" disabled>Kamerayı
+                  Sıfırla</button>
+              </div>
+              <div class="optimization-scene">
+                <canvas id="optimizationTurbineCanvas" role="img"
+                  aria-label="Sürükleyerek çevrilebilen üç katmanlı 3D rüzgâr türbini simülasyonu"></canvas>
+                <p id="optimizationTurbineError" class="optimization-scene-error" role="alert" hidden></p>
+              </div>
+              <div class="optimization-telemetry">
+                <div><span>Türbin durumu</span><strong id="optimizationOperatingState">Çalışıyor (simülasyon)</strong>
+                </div>
+                <div><span>Hedef yön</span><strong id="optimizationTargetYaw">245° · Güneybatı</strong></div>
+                <div><span>Rotor hızı</span><strong><span id="optimizationRpm">12</span> RPM</strong></div>
+                <div><span>Pitch açısı</span><strong><span id="optimizationPitch">0</span>°</strong></div>
+                <div class="optimization-telemetry-wide"><span>Aktif işlem</span><strong
+                    id="optimizationActiveAction">Beklemede</strong></div>
+              </div>
+              <div class="optimization-layer-readout" aria-label="Teleskopik katman durumları">
+                <div><span>1 · Ana</span><strong id="optimizationLayer1">Açık</strong><i><b
+                      id="optimizationLayer1Fill"></b></i></div>
+                <div><span>2 · Orta</span><strong id="optimizationLayer2">Açık</strong><i><b
+                      id="optimizationLayer2Fill"></b></i></div>
+                <div><span>3 · Rotor taşıyıcı</span><strong id="optimizationLayer3">Açık</strong><i><b
+                      id="optimizationLayer3Fill"></b></i></div>
+              </div>
+              <p class="optimization-phase" id="optimizationPhase">Katmanlar açık · normal çalışma konumu</p>
+              <div class="optimization-risk-result" id="optimizationRiskResult" aria-live="polite">
+                <strong>İşlem öncesi risk değerlendirmesi bekleniyor</strong>
+                <p>Önce yön veya katman işlemi seçin, ardından risk kontrolünü çalıştırın.</p>
+              </div>
+              <div class="optimization-wind-table-wrap">
+                <table class="optimization-wind-table">
+                  <caption>Sekiz yönlü rüzgâr analizi · simülasyon ölçüm verileri</caption>
+                  <thead>
+                    <tr>
+                      <th>Yön</th>
+                      <th>Ort. / hamle (m/s)</th>
+                      <th>Yön / hız değişimi</th>
+                      <th>TI</th>
+                      <th>Üretim tahmini (kWh/gün)</th>
+                      <th>Güvenlik sınırı</th>
+                      <th>Kalite / ölçüm</th>
+                      <th>Risk</th>
+                    </tr>
+                  </thead>
+                  <tbody id="optimizationWindRows"></tbody>
+                </table>
+              </div>
+              <p class="optimization-model-note" id="optimizationModelNote">Tahmini enerji, gelir analizinin tabanıyla
+                normalize edilmiş güç eğrisi karşılaştırmasıdır.</p>
+            </div>
+          </div>
+        </section>
+
+        <div class="analytics-grid-main">
+          <section class="chart-card" aria-labelledby="chart-title">
+            <div class="card-header split-header">
+              <div>
+                <p class="panel-kicker">Üretim raporu</p>
+                <h2 id="chart-title">Elektrik üretim grafiği</h2>
+              </div>
+              <div class="period-switcher" role="group" aria-label="Raporlama dönemi">
+                <button class="period-button" data-period="hourly" type="button">Saatlik</button><button
+                  class="period-button active" data-period="daily" type="button">Günlük</button><button
+                  class="period-button" data-period="weekly" type="button">Haftalık</button><button
+                  class="period-button" data-period="monthly" type="button">Aylık</button><button class="period-button"
+                  data-period="yearly" type="button">Yıllık</button>
+              </div>
+            </div>
+            <div class="chart-shell"><canvas id="energyChart" aria-label="Döneme göre elektrik üretim grafiği"
+                role="img"></canvas></div>
+            <div class="chart-summary-grid" aria-label="Seçili dönemin özet değerleri">
+              <div class="summary-item"><span class="summary-label">Dönem toplamı</span><strong
+                  id="summaryProduced">18.420 kWh</strong></div>
+              <div class="summary-item"><span class="summary-label">En yüksek üretim</span><strong id="summaryPeak">3,4
+                  MW</strong></div>
+              <div class="summary-item"><span class="summary-label">Ortalama üretim</span><strong
+                  id="summaryAverage">2,7 MW</strong></div>
+              <div class="summary-item"><span class="summary-label">Önceki döneme göre</span><strong
+                  id="summaryCompare">+11,4%</strong></div>
+            </div>
+          </section>
+          <aside class="wind-card" aria-labelledby="wind-compass-title">
+            <div class="card-header">
+              <div>
+                <p class="panel-kicker">Meteoroloji</p>
+                <h2 id="wind-compass-title">Rüzgâr yönü</h2>
+              </div>
+            </div>
+            <div class="wind-compass-wrap"><svg id="windCompass" viewBox="0 0 220 220" role="img"
+                aria-label="Rüzgâr yönünü gösteren pusula"></svg></div>
+            <div class="wind-readout"><span class="wind-direction-label">Anlık yön</span><strong
+                id="windDirectionDegree">245°</strong><span id="windDirectionCardinal">Batı-Güneybatı</span></div>
+            <p class="compass-caption">Pusula üzerindeki gösterge rüzgârın geldiği yönü belirtir.</p>
+          </aside>
+        </div>
+
+        <section class="esg-impact-panel" aria-labelledby="esg-impact-title">
+          <div class="esg-panel-header">
+            <div>
+              <p class="panel-kicker esg-kicker">Sürdürülebilirlik ve Ekonomik Değer</p>
+              <h2 id="esg-impact-title">Çevresel ve Sosyo-Ekonomik Etki (ESG)</h2>
+            </div>
+            <span class="esg-status-badge">
+              <i class="esg-status-dot" aria-hidden="true"></i>
+              TEMİZ ENERJİ KAZANIMI
+            </span>
+          </div>
+
+          <div class="esg-cards-grid">
+            <article class="esg-impact-card">
+              <div class="esg-card-top">
+                <span class="esg-card-label">Önlenen Fuel-Oil Tüketimi</span>
+                <span class="esg-icon-badge" aria-hidden="true" title="Yakıt Tasarrufu (Damla)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                  </svg>
+                </span>
+              </div>
+              <strong class="esg-card-value">14.605 L/gün</strong>
+              <p class="esg-card-sub">Teknecik tüketim azaltımı | ~91 Varil</p>
+            </article>
+
+            <article class="esg-impact-card">
+              <div class="esg-card-top">
+                <span class="esg-card-label">Engellenen CO2 Salımı</span>
+                <span class="esg-icon-badge" aria-hidden="true" title="Ekolojik Kazanım (Yaprak)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                    <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                  </svg>
+                </span>
+              </div>
+              <strong class="esg-card-value">39.7 Ton/gün</strong>
+              <p class="esg-card-sub">Yıllık 1.800 yetişkin ağaç eşdeğeri</p>
+            </article>
+
+            <article class="esg-impact-card">
+              <div class="esg-card-top">
+                <span class="esg-card-label">Engellenen Döviz Çıkışı</span>
+                <span class="esg-icon-badge" aria-hidden="true" title="Ekonomik Koruma (Kalkan)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </span>
+              </div>
+              <strong class="esg-card-value">$11.200/gün</strong>
+              <p class="esg-card-sub">KKTC ithal yakıt tasarrufu</p>
+            </article>
+          </div>
+        </section>
+
+        <div class="secondary-indicators" aria-label="Ek saha göstergeleri">
+          <div class="indicator-card"><span class="indicator-label">Aktif türbin</span><strong
+              id="activeTurbines">17</strong></div>
+          <div class="indicator-card"><span class="indicator-label">Bakımda</span><strong
+              id="maintenanceTurbines">2</strong></div>
+          <div class="indicator-card"><span class="indicator-label">Şebeke aktarım oranı</span><strong
+              id="gridEfficiency">91,2%</strong></div>
+          <div class="indicator-card"><span class="indicator-label">Seçili dönem üretimi</span><strong
+              id="selectedPeriodProduction">18.420 kWh</strong></div>
+        </div>
+      </section>
+    </main>
+    <footer class="app-footer"><span>© 2026 RüzgarGülü - Powered by AKKA Soft</span><span>Rüzgâr Enerjisi İzleme ve
+        Kontrol Sistemi ·
+        Simülasyon verisi</span></footer>
+  </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <script type="module" src="./js/header-notifications.js?v=20261030-3"></script>
+  <script type="module" src="./js/app.js?v=20261030-4"></script>
+</body>
+
+</html>
