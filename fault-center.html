@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RüzgarGülü türbin arızaları, uyarılar ve olay takibi." />
+  <meta name="theme-color" content="#f5fafe" />
+  <title>Arıza Kontrol Merkezi | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261029-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261030-3" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/responsive.css?v=desktop-20261029-6" />
+</head>
+
+<body data-page="fault-center">
+  <div class="app-shell">
+    <header class="topbar" aria-label="Uygulama üst bilgisi">
+      <a class="brand" href="./dashboard.html" aria-label="RüzgarGülü genel bakış">
+        <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol
+            Sistemi</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Ana menü">
+        <a class="nav-link" href="./dashboard.html">Genel Bakış</a>
+        <a class="nav-link" href="./analytics.html">Enerji Analizi</a>
+        <a class="nav-link active" href="./fault-center.html" aria-current="page">Arıza Kontrol Merkezi</a>
+        <a class="nav-link" href="./turbulence-center.html">Türbülans Merkezi</a>
+        <a class="nav-link" href="./simulasyon-merkezi.html">Simülasyon Merkezi</a>
+      </nav>
+      <div class="topbar-actions" aria-label="Sistem bilgileri">
+        <div class="notification-dropdown">
+          <button class="icon-button notification-button" type="button" aria-label="Bildirimleri aç"
+            aria-expanded="false" aria-controls="headerNotificationPanel">
+            <span class="icon-bell" aria-hidden="true">🔔</span><span class="badge" id="notificationBadge">0</span>
+          </button>
+          <section class="notification-popover" id="headerNotificationPanel" aria-label="Bildirimler" hidden>
+            <header class="notification-popover-header">
+              <div>
+                <h2>Bildirimler</h2>
+                <p id="headerNotificationSummary">Güncel uyarılar</p>
+              </div>
+              <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Tümünü okundu
+                işaretle</button>
+            </header>
+            <ul class="notification-popover-list" id="headerNotificationList" aria-live="polite"></ul>
+          </section>
+        </div>
+        <span class="login-button welcome-user" id="welcomeUser">Hoş Geldin, AKKA Soft</span>
+        <button class="logout-button" type="button" data-logout>Çıkış</button>
+      </div>
+    </header>
+    <main class="page-content">
+      <section class="section fault-section" aria-labelledby="fault-title">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow cool">Saha güvenilirliği</p>
+            <h1 id="fault-title">Arıza Kontrol Merkezi</h1>
+            <p class="page-lede">Türbin olaylarını önceliklendirin, inceleyin ve durumlarını güncel tutun.</p>
+          </div>
+        </div>
+        <div class="fault-summary-grid" id="faultSummaryGrid" aria-live="polite"></div>
+        <section class="fault-panel" aria-labelledby="fault-table-heading">
+          <div class="fault-panel-heading">
+            <div>
+              <p class="panel-kicker">Olay kayıtları</p>
+              <h2 id="fault-table-heading">Arıza ve uyarı listesi</h2>
+            </div><span class="record-count" id="faultRecordCount"></span>
+          </div>
+          <div class="fault-toolbar">
+            <div class="toolbar-inputs">
+              <label class="field-label"><span>Arıza kimliği</span><input id="faultSearchId" type="search"
+                  placeholder="Örn. FLT-2041" aria-label="Arıza kimliğine göre ara" /></label>
+              <label class="field-label"><span>Türbin kimliği</span><input id="faultSearchTurbine" type="search"
+                  placeholder="Örn. WT-07" aria-label="Türbin kimliğine göre ara" /></label>
+              <label class="field-label"><span>Önem derecesi</span><select id="faultSeverityFilter"
+                  aria-label="Önem derecesine göre filtrele">
+                  <option value="all">Tüm önem dereceleri</option>
+                  <option value="Critical">Kritik</option>
+                  <option value="High">Yüksek</option>
+                  <option value="Moderate">Orta</option>
+                  <option value="Low">Düşük</option>
+                </select></label>
+              <label class="field-label"><span>Durum</span><select id="faultStatusFilter"
+                  aria-label="Duruma göre filtrele">
+                  <option value="all">Tüm durumlar</option>
+                  <option value="Active">Aktif</option>
+                  <option value="Acknowledged">Kabul edildi</option>
+                  <option value="Under Investigation">İnceleniyor</option>
+                  <option value="Resolved">Çözüldü</option>
+                </select></label>
+            </div>
+            <div class="toolbar-actions"><button id="clearFiltersButton" class="secondary-button small"
+                type="button">Filtreleri temizle</button></div>
+          </div>
+          <div class="table-shell">
+            <table>
+              <thead>
+                <tr>
+                  <th>Arıza kimliği</th>
+                  <th>Türbin kimliği</th>
+                  <th>Arıza türü</th>
+                  <th>Önem</th>
+                  <th>Açıklama</th>
+                  <th>Tespit zamanı</th>
+                  <th>Durum</th>
+                  <th>İşlemler</th>
+                </tr>
+              </thead>
+              <tbody id="faultTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="fault-report-card" aria-labelledby="fault-report-heading">
+          <div class="fault-report-heading">
+            <div>
+              <p class="panel-kicker">Saha ekibiyle iletişim</p>
+              <h2 id="fault-report-heading">Arıza Ekibine Bildirim Gönder</h2>
+              <p class="fault-report-intro">Tablodan bir arızayı seçin veya aşağıdan belirleyin. Bilgileri kontrol edip
+                düzenledikten sonra mesajı önizleyebilir, kopyalayabilir ya da WhatsApp'ta açabilirsiniz.</p>
+            </div>
+            <span class="section-tag demo-tag">SİMÜLASYON VERİSİ</span>
+          </div>
+          <form id="faultReportForm" novalidate>
+            <div class="fault-report-fields">
+              <label class="field-label fault-report-full"><span>Bildirilecek arıza <span
+                    aria-hidden="true">*</span></span><select id="reportFaultId" required>
+                  <option value="">Önce arıza kaydı seçin</option>
+                </select></label>
+              <label class="field-label"><span>Türbin ID <span aria-hidden="true">*</span></span><input
+                  id="reportTurbineId" type="text" required /></label>
+              <label class="field-label"><span>Türbin konumu <span aria-hidden="true">*</span></span><input
+                  id="reportLocation" type="text" placeholder="Bölge veya koordinat" required /><small
+                  class="fault-report-hint">Seçilen kayıtta konum yoksa elle ekleyin.</small></label>
+              <label class="field-label"><span>Arıza türü <span aria-hidden="true">*</span></span><input
+                  id="reportFaultType" type="text" required /></label>
+              <label class="field-label"><span>Önem seviyesi <span aria-hidden="true">*</span></span><select
+                  id="reportSeverity" required>
+                  <option value="">Önem seçin</option>
+                  <option value="Low">Düşük</option>
+                  <option value="Moderate">Orta</option>
+                  <option value="High">Yüksek</option>
+                  <option value="Critical">Kritik</option>
+                </select></label>
+              <label class="field-label fault-report-full"><span>Arıza açıklaması <span
+                    aria-hidden="true">*</span></span><textarea id="reportDescription" rows="3"
+                  required></textarea></label>
+              <label class="field-label"><span>Tespit zamanı <span aria-hidden="true">*</span></span><input
+                  id="reportDetectionTime" type="datetime-local" required /></label>
+              <label class="field-label"><span>Arıza durumu <span aria-hidden="true">*</span></span><select
+                  id="reportStatus" required>
+                  <option value="">Durum seçin</option>
+                  <option value="Active">Yeni</option>
+                  <option value="Acknowledged">Kabul edildi</option>
+                  <option value="Under Investigation">İnceleniyor</option>
+                  <option value="Resolved">Giderildi</option>
+                </select></label>
+              <label class="field-label fault-report-full"><span>Ek not</span><textarea id="reportNote" rows="3"
+                  placeholder="Arıza ekibine iletmek istediğiniz ek bilgi (isteğe bağlı)"></textarea></label>
+            </div>
+            <p class="fault-report-config" id="faultReportConfigNotice">WhatsApp ekibine doğrudan yönlendirme için ekip
+              numarası yapılandırılmalıdır. Mesaj önizleme ve kopyalama numara olmadan da kullanılabilir.</p>
+            <div class="fault-report-actions">
+              <button class="secondary-button small" id="previewFaultReport" type="button">Mesajı Önizle</button>
+              <button class="secondary-button small" id="copyFaultReport" type="button">Mesajı Kopyala</button>
+              <button class="whatsapp-button" id="sendFaultReport" type="button"><span aria-hidden="true">☏</span>
+                WhatsApp ile Arıza Bildir</button>
+            </div>
+            <p class="fault-report-feedback" id="faultReportFeedback" role="status" aria-live="polite"></p>
+            <section class="fault-report-preview" aria-labelledby="fault-report-preview-heading">
+              <h3 id="fault-report-preview-heading">WhatsApp mesajı önizlemesi</h3>
+              <pre id="faultReportPreview">Bir arıza seçtiğinizde mesaj önizlemesi burada görünecek.</pre>
+            </section>
+            <p class="fault-report-disclaimer">WhatsApp mesajı otomatik gönderilmez. Açılan WhatsApp ekranında mesajı
+              inceleyip gönderme işlemini kendiniz tamamlayın.</p>
+          </form>
+        </section>
+      </section>
+    </main>
+    <footer class="app-footer"><span>© 2026 RüzgarGülü - Powered by AKKA Soft</span><span>Rüzgâr Enerjisi İzleme ve
+        Kontrol Sistemi ·
+        Simülasyon verisi</span></footer>
+  </div>
+  <div id="faultModal" class="modal hidden" aria-hidden="true" aria-labelledby="modalTitle">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal-header">
+        <div>
+          <p class="panel-kicker">Olay kaydı</p>
+          <h2 id="modalTitle">Arıza detayları</h2>
+        </div><button class="modal-close" type="button" aria-label="Detay panelini kapat">×</button>
+      </header>
+      <div id="faultModalContent" class="modal-content"></div>
+    </div>
+  </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <script type="module" src="./js/header-notifications.js?v=20261030-3"></script>
+  <script type="module" src="./js/app.js?v=20261030-4"></script>
+</body>
+
+</html>
