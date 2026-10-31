@@ -500,6 +500,9 @@ export async function initTurbineMap() {
       zoom: CYPRUS_OVERVIEW.zoom,
       scrollWheelZoom: true
     });
+    window.turbineMapInstance = mapInstance;
+    window.L = L;
+    window.dispatchEvent(new CustomEvent("turbineMapReady", { detail: { map: mapInstance, L } }));
 
     tileLayers = {
       street: L.tileLayer('https://mt1.google.com/vt/lyrs=m&hl=tr&x={x}&y={y}&z={z}', {

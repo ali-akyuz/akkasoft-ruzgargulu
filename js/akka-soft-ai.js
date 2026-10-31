@@ -208,6 +208,7 @@ class AkkaSoftAiAssistant {
             <button type="button" class="akka-ai-chip" data-query="WT-07 neden arızalandı?">🚨 WT-07 Kritik Alarm</button>
             <button type="button" class="akka-ai-chip" data-query="Gece arbitraj ve hidrojen durumu nedir?">🔋 Gece Arbitrajı &amp; H₂</button>
             <button type="button" class="akka-ai-chip" data-query="Rüzgâr yönü ve hızı nasıl?">💨 Rüzgâr Akışı</button>
+            <button type="button" class="akka-ai-chip" data-query="Kuş göç radarı ve çevre durumu nedir?">🦅 Kuş Radarı</button>
             <button type="button" class="akka-ai-chip" data-query="Finansal gelir ve kâr durumu nedir?">💰 Gelir &amp; Finans</button>
             <button type="button" class="akka-ai-chip" data-query="3D dijital ikiz ve simülasyonu aç">🎮 3D Simülasyon</button>
             <button type="button" class="akka-ai-chip" data-query="Bana en yakın türbin hangisi?">📍 En Yakın Türbin</button>
@@ -390,6 +391,18 @@ class AkkaSoftAiAssistant {
 
   generateResponse(query) {
     const q = query.toLowerCase().trim();
+
+    // Kuş Göç Radarı & Otonom Koruma
+    if (q.includes('kuş') || q.includes('radar') || q.includes('göç') || q.includes('turna') || q.includes('leylek') || q.includes('çevre') || q.includes('biyoçeşitlilik') || q.includes('identiflight')) {
+      return `
+        🦅 <strong>YAPAY ZEKA KUŞ GÖÇ RADARI &amp; OTONOM KORUMA:</strong><br/>
+        • <strong>Mevcut Durum:</strong> Kıbrıs Beşparmak – Çamlıbel koridorunda Doppler radar aktif.<br/>
+        • <strong>İzlenen Sürü:</strong> Göçmen Turna Sürüsü (~48 Birey · İrtifa: 125 m · Hız: 42 km/s).<br/>
+        • <strong>Otonom Koruma Protokolü:</strong> Sürü türbine 1,5 km yaklaştığında rotor devri 14,7 RPM'den 1,8 RPM'e düşürülerek kanatlar bayraklanır (Soft Curtailment).<br/>
+        • <strong>ESG Biyoçeşitlilik Skoru:</strong> %99,8 (Kurtarılan yaban hayatı: 142 birey · Önlenen çevre cezası: €45.000).<br/>
+        <button type="button" class="akka-welcome-opt-btn" onclick="document.getElementById('birdRadarToggleBtn')?.click()" style="margin-top:6px; background:#059669; color:#fff; border-color:#34d399;">🦅 Kuş Radarını Haritada Aç / Canlandır</button>
+      `;
+    }
 
     // Yangın & Acil Durum Sistemi
     if (q.includes('yangın') || q.includes('acil') || q.includes('emergency') || q.includes('söndür') || q.includes('duman') || q.includes('alarm')) {
