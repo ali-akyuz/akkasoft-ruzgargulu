@@ -391,6 +391,17 @@ class AkkaSoftAiAssistant {
   generateResponse(query) {
     const q = query.toLowerCase().trim();
 
+    // Yangın & Acil Durum Sistemi
+    if (q.includes('yangın') || q.includes('acil') || q.includes('emergency') || q.includes('söndür') || q.includes('duman') || q.includes('alarm')) {
+      return `
+        🚨 <strong>YANGIN VE ACİL DURUM SİSTEMİ DEVREDE:</strong><br/>
+        • <strong>Etkilenen Türbin:</strong> <span class="akka-metric-pill alert">WT-07 · Kalkanlı Sahası</span><br/>
+        • <strong>Füzyon Teyidi:</strong> Çift Sensörle Doğrulandı (Duman: %22,4 | Stator: 84,8 °C | UV Alev: Pozitif)<br/>
+        • <strong>Müdahale Talimatı:</strong> Yangın söndürme konsolunu açıp FirePro aerosol sistemini ateşleyin ve rotoru bayraklayın.<br/>
+        <button type="button" class="akka-welcome-opt-btn" onclick="document.getElementById('emOpenModalBtn')?.click()" style="margin-top:6px; background:#ef4444; color:#fff; border-color:#dc2626;">🚨 Acil Durum Merkezini Konsolda Aç</button>
+      `;
+    }
+
     // 1. WT-07 & Arızalar
     if (q.includes('wt-07') || q.includes('arız') || q.includes('kritik') || q.includes('sıcaklık')) {
       return `
