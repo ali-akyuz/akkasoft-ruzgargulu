@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Sekiz yönden rüzgâr ölçümlerini değerlendiren türbülans ve erken uyarı simülasyonu." />
+  <meta name="theme-color" content="#f5fafe" />
+  <title>Türbülans ve Erken Uyarı Merkezi | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261029-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261030-3" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/responsive.css?v=desktop-20261029-6" />
+  <link rel="stylesheet" href="./css/turbulence-center.css?v=20261030-2" />
+</head>
+
+<body data-page="turbulence-center">
+  <div class="app-shell">
+    <header class="topbar" aria-label="Uygulama üst bilgisi">
+      <a class="brand" href="./dashboard.html" aria-label="RüzgarGülü genel bakış">
+        <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol
+            Sistemi</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Ana menü">
+        <a class="nav-link" href="./dashboard.html">Genel Bakış</a>
+        <a class="nav-link" href="./analytics.html">Enerji Analizi</a>
+        <a class="nav-link" href="./fault-center.html">Arıza Kontrol Merkezi</a>
+        <a class="nav-link active" href="./turbulence-center.html" aria-current="page">Türbülans Merkezi</a>
+        <a class="nav-link" href="./simulasyon-merkezi.html">Simülasyon Merkezi</a>
+      </nav>
+      <div class="topbar-actions" aria-label="Sistem bilgileri">
+        <div class="notification-dropdown">
+          <button class="icon-button notification-button" type="button" aria-label="Bildirimleri aç"
+            aria-expanded="false" aria-controls="headerNotificationPanel">
+            <span class="icon-bell" aria-hidden="true">🔔</span><span class="badge" id="notificationBadge">0</span>
+          </button>
+          <section class="notification-popover" id="headerNotificationPanel" aria-label="Bildirimler" hidden>
+            <header class="notification-popover-header">
+              <div>
+                <h2>Bildirimler</h2>
+                <p id="headerNotificationSummary">Güncel uyarılar</p>
+              </div>
+              <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Tümünü okundu
+                işaretle</button>
+            </header>
+            <ul class="notification-popover-list" id="headerNotificationList" aria-live="polite"></ul>
+          </section>
+        </div>
+        <span class="login-button welcome-user" id="welcomeUser">Hoş Geldin, AKKA Soft</span>
+        <button class="logout-button" type="button" data-logout>Çıkış</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <section class="section turbulence-section" aria-labelledby="turbulence-title">
+        <div class="section-heading-row turbulence-page-heading">
+          <div>
+            <p class="eyebrow cool">Çevresel risk · Erken uyarı</p>
+            <h1 id="turbulence-title">Türbülans ve Erken Uyarı Merkezi</h1>
+            <p class="page-lede">Rüzgâr koşullarının 25 km yarıçapta izlenmesi, erken risk analizi ve otonom türbin
+              koruma kontrolü.</p>
+          </div>
+        </div>
+        <p class="safety-banner"><strong>Erken Uyarı ve Otonom Koruma Mimarisi:</strong> Hedef türbinin 25 km
+          yarıçapındaki 8 yönlü telemetri istasyonlarından alınan rüzgâr hızı, hamle ve türbülans yoğunluğu (TI)
+          verileri <strong>IEC 61400-1</strong> kriterlerine göre analiz edilir; olası fırtına ve türbülans dalgaları
+          türbine ulaşmadan önce optimum <strong>yaw yönelimi</strong> ve <strong>3 kademeli teleskopik kule
+            koruma</strong> kararları üretilir.</p>
+        <p class="storage-error" id="storageError" role="alert" hidden></p>
+
+        <section class="risk-alert risk-low" id="riskAlert" aria-live="polite" aria-labelledby="riskAlertTitle">
+          <div class="risk-alert-icon" aria-hidden="true">!</div>
+          <div class="risk-alert-copy">
+            <span class="risk-alert-label" id="riskAlertTitle">Risk hesaplanıyor</span>
+            <p class="risk-alert-message">Sekiz yönün ölçümleri değerlendiriliyor.</p>
+            <span class="risk-alert-meta"></span>
+          </div>
+          <a class="detail-action-pill" id="riskAlertDetailLink"
+            href="./turbulence-detail.html?turbine=WT-07">Detaylandır <span aria-hidden="true">→</span></a>
+        </section>
+
+        <div class="turbulence-overview-grid">
+          <section class="turbulence-card monitoring-card" aria-labelledby="monitoring-heading">
+            <div class="card-heading monitoring-card-heading">
+              <div>
+                <p class="panel-kicker">Çevresel izleme</p>
+                <h2 id="monitoring-heading">25 km çevre ölçümleri</h2>
+              </div>
+              <div class="monitoring-turbine-switcher" id="monitoringTurbineButtons" role="group"
+                aria-label="Hedef türbin seçimi"></div>
+            </div>
+            <div class="risk-legend" aria-label="Risk renk açıklamaları">
+              <span><i class="legend-dot risk-low"></i>Düşük</span><span><i
+                  class="legend-dot risk-attention"></i>Dikkat</span>
+              <span><i class="legend-dot risk-high"></i>Yüksek</span><span><i
+                  class="legend-dot risk-critical"></i>Kritik</span>
+              <span><i class="legend-dot risk-uncertain"></i>Belirsiz</span>
+            </div>
+            <div class="compass-layout">
+              <div class="wind-compass" id="windCompass" aria-label="Hedef türbin çevresindeki sekiz ölçüm yönü">
+                <div class="compass-range range-outer"><span>25 km izleme yarıçapı</span></div>
+                <div class="compass-range range-inner" aria-hidden="true"></div>
+                <div class="compass-spokes" id="compassSpokes" aria-hidden="true"></div>
+                <div class="compass-points" id="compassPoints"></div>
+                <div class="compass-center"><span class="center-turbine-icon" aria-hidden="true">✦</span><strong
+                    id="compassCenterTurbine">WT-07</strong><small>Hedef türbin</small></div>
+              </div>
+              <aside class="measurement-detail" id="measurementDetail" aria-live="polite"
+                aria-label="Seçili ölçüm ayrıntıları"></aside>
+            </div>
+          </section>
+          <section class="turbulence-card risk-explanation-card" aria-labelledby="explanation-heading">
+            <div class="card-heading">
+              <div>
+                <p class="panel-kicker">Karar açıklaması</p>
+                <h2 id="explanation-heading">Risk değerlendirmesi</h2>
+              </div>
+            </div>
+            <dl class="explanation-list">
+              <div>
+                <dt>Riski oluşturan yönler</dt>
+                <dd id="riskDirections"></dd>
+              </div>
+              <div>
+                <dt>Ölçüm temelli nedenler</dt>
+                <dd id="riskReasons"></dd>
+              </div>
+              <div>
+                <dt>Önerilen önlem</dt>
+                <dd id="riskRecommendation"></dd>
+              </div>
+              <div>
+                <dt>Önlem gerekçesi</dt>
+                <dd id="riskRationale"></dd>
+              </div>
+            </dl>
+            <p class="threshold-disclaimer" id="thresholdNote"></p>
+            <p class="standard-note">IEC 61400-1 uluslararası rüzgâr türbini tasarım standartları temel alınarak KKTC
+              coğrafi rüzgâr koridorlarına özel kalibre edilmiştir.</p>
+          </section>
+        </div>
+
+        <section class="turbulence-card control-card" aria-labelledby="control-heading">
+          <div class="card-heading control-card-heading">
+            <div>
+              <p class="panel-kicker">Otonom kontrol merkezi</p>
+              <h2 id="control-heading">Önlem ve çalışma senaryosu</h2>
+              <p class="section-intro">Yönelim, yatay eksenli türbinin nacelle/yaw yönüdür; rüzgâr koridoruna göre
+                yapısal yükü optimize eder.</p>
+            </div>
+            <span class="simulation-only-tag">OTONOM KONTROL PANELİ</span>
+          </div>
+          <div class="control-simulator-grid">
+            <div class="control-command-column">
+              <div class="control-actions" id="simulationControls">
+                <button class="primary-button" id="runRecommended" type="button">Önerilen Önlemi Uygula</button>
+                <p class="control-group-label">Yaw yönelimi</p>
+                <div class="yaw-actions" aria-label="Yaw yönelimi kontrolü">
+                  <button class="secondary-button small" data-yaw="0" type="button">Kuzeye Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="45" type="button">Kuzeydoğuya Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="90" type="button">Doğuya Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="135" type="button">Güneydoğuya Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="180" type="button">Güneye Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="225" type="button">Güneybatıya Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="270" type="button">Batıya Yönlendir</button>
+                  <button class="secondary-button small" data-yaw="315" type="button">Kuzeybatıya Yönlendir</button>
+                </div>
+                <div class="operating-actions">
+                  <button class="warning-button" id="simulateStop" type="button">Türbini Güvenli Duruşa Al</button>
+                  <button class="secondary-button small" id="simulateRestart" type="button">Türbini Yeniden Devreye
+                    Al</button>
+                </div>
+                <button class="text-button" id="resetSimulation" type="button">Varsayılan Duruma Sıfırla</button>
+                <button class="secondary-button small camera-reset-button" id="resetCamera" type="button"
+                  disabled>Kamerayı Sıfırla</button>
+                <p class="control-safety-note">Uygulanan yaw yönlendirme ve teleskopik kule komutları, seçili türbinin
+                  mekanik yükünü düşürmek ve enerji sürekliliğini korumak üzere eşzamanlı yürütülür.</p>
+              </div>
+              <div class="scenario-toolbar">
+                <label class="field-label" for="scenarioSelect"><span>Hazır ölçüm senaryosu</span>
+                  <select id="scenarioSelect">
+                    <option value="normal">Normal rüzgâr koşulları</option>
+                    <option value="gusts">Hızlı rüzgâr hamleleri</option>
+                    <option value="direction">Rüzgâr yönünde ani değişim</option>
+                    <option value="multi">Birden fazla yönde artan risk</option>
+                    <option value="critical">Kritik risk ve durdurma önerisi</option>
+                    <option value="outage">Veri kaynağının kesilmesi</option>
+                    <option value="stale">Eski veya güvenilir olmayan ölçümler</option>
+                  </select>
+                </label>
+                <p id="selectedScenario">Normal rüzgâr koşulları</p>
+              </div>
+              <div class="control-status-grid">
+                <article class="control-status-card"><span>Mevcut yön</span><strong id="yawValue">245° · GB</strong>
+                </article>
+                <article class="control-status-card"><span>Hedef yön</span><strong id="targetYaw">245° · GB</strong>
+                </article>
+                <article class="control-status-card"><span>Çalışma durumu</span><strong id="operatingState">Çalışıyor
+                    (simülasyon)</strong></article>
+                <article class="control-status-card"><span>Son uygulanan önlem</span><strong id="lastAction">Henüz önlem
+                    uygulanmadı</strong><small id="lastActionAt">—</small></article>
+                <article class="control-status-card"><span>Güncel risk analizi</span><strong id="controlRisk"
+                    class="risk-badge risk-low">Düşük risk</strong></article>
+              </div>
+            </div>
+            <div class="turbine-simulation-panel">
+              <div class="turbine-panel-heading">
+                <div>
+                  <p class="panel-kicker">Etkileşimli 3D dijital ikiz</p>
+                  <h3><span id="managedTurbineTitle">WT-07</span> · Türbin telemetrisi</h3>
+                </div>
+                <label class="managed-turbine-select" for="managedTurbineSelect">
+                  <span>Yönetilen türbin</span>
+                  <select id="managedTurbineSelect" aria-label="Yönetilecek türbin"></select>
+                </label>
+                <span class="demo-pill">CANLI 3D TELEMETRİ</span>
+              </div>
+              <div class="turbine-scene">
+                <canvas id="turbine3dCanvas" role="img"
+                  aria-label="Fareyle sürükleyerek çevirebileceğiniz üç kanatlı 3D rüzgâr türbini simülasyonu"></canvas>
+                <p class="turbine3d-error" id="turbine3dError" role="alert" hidden></p>
+                <div class="turbine3d-toolbar">
+                  <span>Çevirmek için sürükleyin · Yakınlaştırmak için kaydırın</span>
+                </div>
+              </div>
+              <div class="turbine-compass-readout"><span class="direction-compass"><i>N</i><b
+                    id="yawCompassArrow">↑</b></span>
+                <div><span>Mevcut yön</span><strong id="yawDirectionText">Güneybatı · 245°</strong></div><span
+                  class="target-direction">Hedef: <strong id="targetDirectionText">Güneybatı · 245°</strong></span>
+              </div>
+              <div class="turbine-telemetry">
+                <div><span>Kanat kademesi</span><strong id="bladeStageValue">3 · Normal çalışma</strong></div>
+                <div><span>Rotor hızı</span><strong><span id="rotorRpmValue">12</span> RPM</strong></div>
+                <div><span>Kanat pitch açısı</span><strong><span id="pitchAngleValue">0</span>°</strong></div>
+                <div><span>Aktif işlem</span><strong id="activeOperation">Beklemede</strong></div>
+                <div><span>Risk önerisi</span><strong id="recommendedYaw">Analiz sonrası belirlenir</strong></div>
+                <div class="telemetry-wide"><span>İşlem durumu</span><strong id="operationCompletion">Hazır</strong>
+                </div>
+              </div>
+              <div class="shutdown-stages" aria-label="Üç kademeli durdurma aşamaları">
+                <div class="shutdown-stage active" data-stage="3"><span>3</span><strong>Normal çalışma</strong></div>
+                <div class="shutdown-stage" data-stage="2"><span>2</span><strong>Yavaşlama</strong></div>
+                <div class="shutdown-stage" data-stage="1"><span>1</span><strong>Duruş</strong></div>
+              </div>
+              <section class="telescopic-status-panel" aria-label="Teleskopik kule katmanları">
+                <div class="telescopic-status-heading">
+                  <div><span>Üç kademeli kule mekanizması</span><strong id="telescopicLevel">Açılma seviyesi ·
+                      %100</strong></div>
+                  <strong id="telescopicSequence">1 → 2 → 3</strong>
+                </div>
+                <div class="telescopic-layer-list">
+                  <div class="telescopic-layer" data-telescope-layer="1">
+                    <span class="telescopic-layer-number">1</span>
+                    <div class="telescopic-layer-info"><strong>Ana katman</strong><span
+                        id="telescopicLayer1Status">Açık</span>
+                      <div class="telescopic-layer-track"><i id="telescopicLayer1Fill"></i></div>
+                    </div>
+                  </div>
+                  <div class="telescopic-layer" data-telescope-layer="2">
+                    <span class="telescopic-layer-number">2</span>
+                    <div class="telescopic-layer-info"><strong>Orta katman</strong><span
+                        id="telescopicLayer2Status">Açık</span>
+                      <div class="telescopic-layer-track"><i id="telescopicLayer2Fill"></i></div>
+                    </div>
+                  </div>
+                  <div class="telescopic-layer" data-telescope-layer="3">
+                    <span class="telescopic-layer-number">3</span>
+                    <div class="telescopic-layer-info"><strong>Üst katman · Rotor taşıyıcı</strong><span
+                        id="telescopicLayer3Status">Açık</span>
+                      <div class="telescopic-layer-track"><i id="telescopicLayer3Fill"></i></div>
+                    </div>
+                  </div>
+                </div>
+                <p class="telescopic-phase" id="telescopicPhase">Katmanlar açık · normal çalışma konumu</p>
+              </section>
+              <p class="turbine-demo-note">Rotor RPM, kanat pitch açısı ve 3 kademeli teleskopik kule yüksekliği seçilen
+                koruma senaryosuna göre gerçek zamanlı güncellenir.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="turbulence-card history-card" aria-labelledby="history-heading">
+          <div class="card-heading history-heading">
+            <div>
+              <p class="panel-kicker">İzlenebilir kararlar</p>
+              <h2 id="history-heading">Türbülans ve Önlem Geçmişi</h2>
+              <p class="section-intro">Senaryo değişiklikleri ve simülasyon işlemleri zaman damgasıyla saklanır.</p>
+            </div>
+            <label class="history-filter" for="historyFilter"><span>Risk filtresi</span>
+              <select id="historyFilter">
+                <option value="all">Tüm seviyeler</option>
+                <option value="low">Düşük</option>
+                <option value="attention">Dikkat</option>
+                <option value="high">Yüksek</option>
+                <option value="critical">Kritik</option>
+                <option value="uncertain">Belirsiz</option>
+              </select>
+            </label>
+          </div>
+          <p class="history-count" id="eventCount">0 kayıt</p>
+          <div class="table-shell turbulence-history-shell">
+            <table class="turbulence-history-table">
+              <thead>
+                <tr>
+                  <th>Tarih ve saat</th>
+                  <th>Risk seviyesi</th>
+                  <th>Risk yönü</th>
+                  <th>Tespit edilen neden</th>
+                  <th>Önerilen önlem</th>
+                  <th>Simüle edilen işlem</th>
+                  <th>İşlem sonrası risk</th>
+                  <th>İşlem durumu / ayrıntı</th>
+                </tr>
+              </thead>
+              <tbody id="eventHistory">
+                <tr>
+                  <td colspan="8" class="empty-state">Henüz simülasyon olayı yok.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="history-retention-note">Simülasyonu sıfırlamak ölçümleri, yönelimi ve çalışma durumunu varsayılana
+            döndürür; olay geçmişi korunur. Geçmiş tarayıcının yerel depolamasında saklanır.</p>
+        </section>
+      </section>
+    </main>
+    <footer class="app-footer"><span>© 2026 RüzgarGülü - Powered by AKKA Soft</span><span>Rüzgâr Enerjisi İzleme ve
+        Kontrol Sistemi ·
+        Simülasyon verisi</span></footer>
+  </div>
+  <template id="compassPointTemplate">
+    <button class="compass-point" type="button">
+      <span class="point-direction"></span><span class="wind-arrow" aria-hidden="true">↑</span><span
+        class="point-speed"></span><span class="point-distance"></span>
+    </button>
+  </template>
+  <script type="module" src="./js/header-notifications.js?v=20261030-3"></script>
+  <script type="module" src="./js/turbulence-center.js?v=20261030-5"></script>
+</body>
+
+</html>

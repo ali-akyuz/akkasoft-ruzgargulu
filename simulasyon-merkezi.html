@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RüzgarGülü Simülasyon Merkezi: 3D rüzgâr çiftliği ve türbin kontrol senaryoları." />
+  <meta name="theme-color" content="#f5fafe" />
+  <title>Simülasyon Merkezi | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261029-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261030-3" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/responsive.css?v=desktop-20261029-6" />
+  <link rel="stylesheet" href="./css/simulasyon-merkezi.css?v=20261030-1" />
+</head>
+
+<body data-page="simulasyon-merkezi">
+  <div class="app-shell">
+    <header class="topbar" aria-label="Uygulama üst bilgisi">
+      <a class="brand" href="./dashboard.html" aria-label="RüzgarGülü genel bakış">
+        <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol
+            Sistemi</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Ana menü">
+        <a class="nav-link" href="./dashboard.html">Genel Bakış</a>
+        <a class="nav-link" href="./analytics.html">Enerji Analizi</a>
+        <a class="nav-link" href="./fault-center.html">Arıza Kontrol Merkezi</a>
+        <a class="nav-link" href="./turbulence-center.html">Türbülans Merkezi</a>
+        <a class="nav-link active" href="./simulasyon-merkezi.html" aria-current="page">Simülasyon Merkezi</a>
+      </nav>
+      <div class="topbar-actions" aria-label="Sistem bilgileri">
+        <div class="notification-dropdown">
+          <button class="icon-button notification-button" type="button" aria-label="Bildirimleri aç"
+            aria-expanded="false" aria-controls="headerNotificationPanel">
+            <span class="icon-bell" aria-hidden="true">🔔</span><span class="badge" id="notificationBadge">0</span>
+          </button>
+          <section class="notification-popover" id="headerNotificationPanel" aria-label="Bildirimler" hidden>
+            <header class="notification-popover-header">
+              <div>
+                <h2>Bildirimler</h2>
+                <p id="headerNotificationSummary">Güncel uyarılar</p>
+              </div>
+              <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Tümünü okundu
+                işaretle</button>
+            </header>
+            <ul class="notification-popover-list" id="headerNotificationList" aria-live="polite"></ul>
+          </section>
+        </div>
+        <span class="login-button welcome-user" id="welcomeUser">Hoş Geldin, AKKA Soft</span>
+        <button class="logout-button" type="button" data-logout>Çıkış</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="local-file-notice" id="localFileNotice" role="status" hidden>
+        <strong>Yerel dosya modu</strong>
+        <span>Simülasyonun çalışması için proje klasöründeki <code>run-local.bat</code> dosyasını çalıştırın.</span>
+      </div>
+      <section class="section simulation-section" aria-labelledby="simulation-title">
+        <div class="section-heading-row simulation-page-heading">
+          <div>
+            <p class="eyebrow cool">3D saha simülasyonu</p>
+            <h1 id="simulation-title">Simülasyon Merkezi</h1>
+            <p class="page-lede">Rüzgâr koşullarını değiştirin, türbinleri izleyin ve üretim senaryosunu gerçek zamanlı
+              değerlendirin.</p>
+          </div>
+        </div>
+
+        <div class="simulation-status-bar" aria-label="Simülasyon durum bilgileri">
+          <div class="status-group">
+            <span class="status-label">Rüzgâr durumu</span>
+            <strong id="statusWindSummary">8.0 m/s · K.D</strong>
+          </div>
+          <div class="status-group">
+            <span class="status-label">Toplam üretim</span>
+            <strong id="statusPowerSummary">0.00 MW</strong>
+          </div>
+          <div class="status-group controls-inline">
+            <span class="simulation-run-state" id="simulationRunState" role="status" aria-live="polite">Simülasyon
+              hazır</span>
+            <button id="startSimulation" class="primary-button" type="button">Başlat</button>
+            <button id="pauseSimulation" class="secondary-button" type="button">Duraklat</button>
+            <button id="resumeSimulation" class="secondary-button" type="button">Devam et</button>
+            <button id="triggerStormSimulation" class="warning-button" type="button">Fırtına Tetikle</button>
+            <button id="resetSimulation" class="secondary-button" type="button">Sıfırla</button>
+          </div>
+        </div>
+
+        <div class="storm-alert" id="stormAlert" role="alert" aria-live="assertive" hidden>
+          <div>
+            <strong>Tehlikeli fırtına uyarısı</strong>
+            <p><span id="stormAlertTurbine">WT-01</span> için uygunsuz hava koşulları algılandı. Güvenli koruma
+              senaryosunu başlatın.</p>
+          </div>
+          <button id="stormProtectButton" class="storm-protect-button" type="button">
+            <span class="storm-protect-icon" aria-hidden="true">✓</span>
+            <span>Koru</span>
+          </button>
+        </div>
+        <div class="storm-protected-notice" id="stormProtectedNotice" role="status" aria-live="polite" hidden>
+          <span class="protected-status-icon" aria-hidden="true">✓</span>
+          <div><strong id="stormProtectionTitle">Türbin koruma altında</strong>
+            <p><span id="protectedTurbineLabel">WT-01</span><span id="stormProtectionDescription"> güvenli moda alındı.
+                Bu yalnızca yerel simülasyon gösterimidir.</span></p>
+          </div>
+        </div>
+
+        <div class="simulation-layout">
+          <aside class="simulation-panel control-panel" aria-labelledby="control-panel-title">
+            <div class="panel-header compact">
+              <div>
+                <p class="panel-kicker">Seçili türbine özel</p>
+                <h2 id="control-panel-title">Rüzgâr koşulları</h2>
+              </div>
+            </div>
+
+            <label class="field-group" for="windSpeedInput">
+              <span>Rüzgâr hızı</span>
+              <div class="input-row">
+                <input id="windSpeedInput" type="range" min="0" max="30" step="0.1" value="8" />
+                <output id="windSpeedValue" for="windSpeedInput">8.0 m/s</output>
+              </div>
+            </label>
+
+            <label class="field-group" for="windDirectionInput">
+              <span>Rüzgâr yönü</span>
+              <div class="input-row">
+                <input id="windDirectionInput" type="range" min="0" max="360" step="1" value="45" />
+                <output id="windDirectionValue" for="windDirectionInput">45° · KD</output>
+              </div>
+            </label>
+
+            <label class="field-group telescope-height-control" for="telescopeHeightInput">
+              <span>Teleskopik kule yüksekliği</span>
+              <div class="input-row">
+                <input id="telescopeHeightInput" type="range" min="0" max="3" step="0.01" value="3" />
+                <output id="telescopeHeightValue" for="telescopeHeightInput">Kademe 3 / 3 · +3.20 m</output>
+              </div>
+              <small>Yalnızca seçili türbinin kule kademesini görsel olarak ayarlar; güç hesabını değiştirmez.</small>
+            </label>
+
+            <label class="field-group select-group" for="turbineSelect">
+              <span>Türbin seçimi</span>
+              <select id="turbineSelect" aria-label="Türbin seçimi">
+                <option value="WT-01">WT-01 · Koruçam Platosu</option>
+                <option value="WT-02">WT-02 · Kayalar Sırtı</option>
+                <option value="WT-03">WT-03 · Çamlıbel Geçidi</option>
+                <option value="WT-04">WT-04 · Lapta Selvilitepe</option>
+                <option value="WT-05">WT-05 · Karşıyaka Koridoru</option>
+                <option value="WT-06">WT-06 · Alsancak Tepesi</option>
+                <option value="WT-07">WT-07 · Kalkanlı Platosu</option>
+                <option value="WT-08">WT-08 · Güzelyurt Boğazı</option>
+                <option value="WT-09">WT-09 · Çatalköy Sırtı</option>
+                <option value="WT-10">WT-10 · Girne Boğazı</option>
+                <option value="WT-11">WT-11 · Değirmenlik Tepesi</option>
+                <option value="WT-12">WT-12 · Alevkayası Sırtı</option>
+                <option value="WT-13">WT-13 · Esentepe Sahil</option>
+                <option value="WT-14">WT-14 · Tatlısu Koridoru</option>
+                <option value="WT-15">WT-15 · Geçitkale Boğazı</option>
+                <option value="WT-16">WT-16 · İskele Platosu</option>
+                <option value="WT-17">WT-17 · Kantara Sırtı</option>
+                <option value="WT-18">WT-18 · Büyükkonuk Tepesi</option>
+                <option value="WT-19">WT-19 · Dipkarpaz Burnu</option>
+              </select>
+            </label>
+
+            <div class="control-summary">
+              <div><span>Seçilen türbin</span><strong id="selectedTurbineLabel">WT-01</strong></div>
+              <div><span>Simülasyon hızı</span><strong id="speedMultiplierLabel">1.0x</strong></div>
+            </div>
+
+            <div class="speed-buttons" aria-label="Simülasyon zamanı hızı">
+              <button class="secondary-button small active" data-speed="1" type="button">1x</button>
+              <button class="secondary-button small" data-speed="1.5" type="button">1.5x</button>
+              <button class="secondary-button small" data-speed="2" type="button">2x</button>
+            </div>
+
+            <div class="safety-note">
+              Bu rüzgâr değerleri yalnızca seçili türbine uygulanır. Diğer türbinlerin koşulları ve yönleri değişmez.
+              Simülasyon gerçek türbinlere komut göndermez.
+            </div>
+          </aside>
+
+          <div class="simulation-viewport-card">
+            <div class="viewport-toolbar">
+              <span class="panel-kicker">3D rüzgâr çiftliği</span>
+              <div class="viewport-actions">
+                <span class="mini-badge" id="windCompassBadge">KD · 45°</span>
+                <button id="resetCamera" class="secondary-button small" type="button">Kamera sıfırla</button>
+              </div>
+            </div>
+            <canvas id="windFarmCanvas" aria-label="3D rüzgâr çiftliği simülasyonu"></canvas>
+          </div>
+
+          <aside class="simulation-panel turbine-panel" aria-labelledby="turbine-panel-title">
+            <div class="panel-header compact">
+              <div>
+                <p class="panel-kicker">Türbin bilgisi</p>
+                <h2 id="turbine-panel-title">Seçili türbin</h2>
+              </div>
+            </div>
+
+            <div class="turbine-card">
+              <div class="turbine-header">
+                <span class="turbine-id" id="turbineIdValue">WT-01</span>
+                <span class="turbine-state" id="turbineStateValue">Normal çalışma</span>
+              </div>
+              <dl class="tech-grid">
+                <div>
+                  <dt>Yön</dt>
+                  <dd id="turbineYawValue">45°</dd>
+                </div>
+                <div>
+                  <dt>Rotor hızı</dt>
+                  <dd id="rotorSpeedValue">12.4 rpm</dd>
+                </div>
+                <div>
+                  <dt>Nominal güç</dt>
+                  <dd id="nominalPowerValue">4.8 MW</dd>
+                </div>
+                <div>
+                  <dt>Üretilen güç</dt>
+                  <dd id="currentPowerValue">0.48 MW</dd>
+                </div>
+                <div>
+                  <dt>Yıllık enerji</dt>
+                  <dd id="annualEnergyValue">1.80 GWh</dd>
+                </div>
+                <div>
+                  <dt>İşletme kademesi</dt>
+                  <dd id="operatingStageValue">Kademe 2</dd>
+                </div>
+              </dl>
+            </div>
+
+            <div class="mini-chart">
+              <div class="mini-chart-header">
+                <span>Güç eğrisi</span>
+                <strong id="powerTrendValue">İyi performans</strong>
+              </div>
+              <div class="mini-bars" id="powerCurveBars" aria-hidden="true">
+                <span style="height: 28%"></span>
+                <span style="height: 42%"></span>
+                <span style="height: 52%"></span>
+                <span style="height: 64%"></span>
+                <span style="height: 80%"></span>
+                <span style="height: 100%"></span>
+                <span style="height: 86%"></span>
+                <span style="height: 73%"></span>
+              </div>
+            </div>
+
+            <section class="simulation-live-chart" aria-labelledby="minuteProductionTitle">
+              <div class="simulation-live-chart-header">
+                <h3 id="minuteProductionTitle">Dakikalık enerji üretimi</h3>
+                <strong id="minuteProductionCurrent">Bu dakika: 0 kWh</strong>
+              </div>
+              <div class="simulation-chart-plot" id="minuteProductionPlot">
+                <svg id="minuteProductionChart" viewBox="0 0 360 158" role="img"
+                  aria-label="Dakikalık enerji üretimi çizgi grafiği"></svg>
+                <div class="simulation-chart-tooltip" id="minuteProductionTooltip" role="tooltip" hidden></div>
+              </div>
+              <p class="simulation-chart-caption">Tamamlanan 60 saniye · seçili türbin üretimi (kWh)</p>
+            </section>
+
+            <section class="simulation-live-chart" aria-labelledby="hourlyRevenueTitle">
+              <div class="simulation-live-chart-header">
+                <h3 id="hourlyRevenueTitle">Tahmini saatlik gelir</h3>
+                <strong id="hourlyRevenueCurrent">₺0/saat</strong>
+              </div>
+              <div class="simulation-chart-plot" id="hourlyRevenuePlot">
+                <svg id="hourlyRevenueChart" viewBox="0 0 360 158" role="img"
+                  aria-label="Tahmini saatlik elektrik geliri sütun grafiği"></svg>
+                <div class="simulation-chart-tooltip" id="hourlyRevenueTooltip" role="tooltip" hidden></div>
+              </div>
+              <p class="simulation-chart-caption">Seçili satış fiyatına göre · TL/saat</p>
+            </section>
+          </aside>
+        </div>
+
+        <div class="stats-grid" aria-label="Simülasyon metrikleri">
+          <article class="metric-card compact-metric">
+            <div class="metric-topline"><span class="metric-label">Anlık toplam güç</span><span class="metric-icon"
+                aria-hidden="true">⚡</span></div>
+            <strong class="metric-value" id="totalPowerValue">0.00 MW</strong>
+            <p class="metric-footer">Tüm aktif türbinler</p>
+          </article>
+          <article class="metric-card compact-metric">
+            <div class="metric-topline"><span class="metric-label">Toplam kurulu güç</span><span class="metric-icon"
+                aria-hidden="true">▣</span></div>
+            <strong class="metric-value" id="installedPowerValue">91.20 MW</strong>
+            <p class="metric-footer">19 türbin × 4.8 MW</p>
+          </article>
+          <article class="metric-card compact-metric">
+            <div class="metric-topline"><span class="metric-label">Çalışan türbin</span><span class="metric-icon"
+                aria-hidden="true">◉</span></div>
+            <strong class="metric-value" id="activeTurbineValue">19</strong>
+            <p class="metric-footer">Sahadaki toplam türbin: 19</p>
+          </article>
+          <article class="metric-card compact-metric">
+            <div class="metric-topline"><span class="metric-label">Süreçte üretilen enerji</span><span
+                class="metric-icon" aria-hidden="true">↗</span></div>
+            <strong class="metric-value" id="generatedEnergyValue">0.00 MWh</strong>
+            <p class="metric-footer">Simülasyon süresi</p>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="app-footer"><span>© 2026 RüzgarGülü - Powered by AKKA Soft</span><span>Rüzgâr Enerjisi İzleme ve
+        Kontrol Sistemi ·
+        Simülasyon verisi</span></footer>
+  </div>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('localFileNotice').hidden = false;
+    }
+  </script>
+  <script type="module" src="./js/header-notifications.js?v=20261030-3"></script>
+  <script type="module" src="./js/simulasyon-merkezi.js?v=20261030-5"></script>
+</body>
+
+</html>

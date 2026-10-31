@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Seçili rüzgâr türbini için 25 km 8 yönlü türbülans telemetrisi, IEC 61400-1 risk analizi ve yapısal koruma detay raporu." />
+  <meta name="theme-color" content="#f5fafe" />
+  <title>Türbin Türbülans Detay Analizi | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261030-1"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261030-3" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/responsive.css?v=desktop-20261029-6" />
+  <link rel="stylesheet" href="./css/turbulence-center.css?v=20261030-2" />
+  <link rel="stylesheet" href="./css/turbulence-detail.css?v=20261030-3" />
+</head>
+
+<body data-page="turbulence-detail">
+  <div class="app-shell">
+    <header class="topbar" aria-label="Uygulama üst bilgisi">
+      <a class="brand" href="./dashboard.html" aria-label="RüzgarGülü genel bakış">
+        <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol
+            Sistemi</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Ana menü">
+        <a class="nav-link" href="./dashboard.html">Genel Bakış</a>
+        <a class="nav-link" href="./analytics.html">Enerji Analizi</a>
+        <a class="nav-link" href="./fault-center.html">Arıza Kontrol Merkezi</a>
+        <a class="nav-link active" href="./turbulence-center.html" aria-current="page">Türbülans Merkezi</a>
+        <a class="nav-link" href="./simulasyon-merkezi.html">Simülasyon Merkezi</a>
+      </nav>
+      <div class="topbar-actions" aria-label="Sistem bilgileri">
+        <div class="notification-dropdown">
+          <button class="icon-button notification-button" type="button" aria-label="Bildirimleri aç"
+            aria-expanded="false" aria-controls="headerNotificationPanel">
+            <span class="icon-bell" aria-hidden="true">🔔</span><span class="badge" id="notificationBadge">0</span>
+          </button>
+          <section class="notification-popover" id="headerNotificationPanel" aria-label="Bildirimler" hidden>
+            <header class="notification-popover-header">
+              <div>
+                <h2>Bildirimler</h2>
+                <p id="headerNotificationSummary">Güncel uyarılar</p>
+              </div>
+              <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Tümünü okundu
+                işaretle</button>
+            </header>
+            <ul class="notification-popover-list" id="headerNotificationList" aria-live="polite"></ul>
+          </section>
+        </div>
+        <span class="login-button welcome-user" id="welcomeUser">Hoş Geldin, AKKA Soft</span>
+        <button class="logout-button" type="button" data-logout>Çıkış</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <section class="section turbulence-section turbulence-detail-section" aria-labelledby="detailPageTitle">
+        <div class="section-heading-row turbulence-page-heading detail-heading-row">
+          <div>
+            <p class="eyebrow cool">DERİNLEMESİNE SAHA TELEMETRİSİ · IEC 61400-1</p>
+            <h1 id="detailPageTitle">WT-07 · Türbülans ve Yapısal Yük Detay Raporu</h1>
+            <p class="page-lede" id="detailPageSubtitle">Kuzey Kıbrıs rüzgâr koridoru üzerindeki 25 km yarıçaplı 8 yönlü
+              istasyonlardan alınan anlık akış, hamle ve türbülans yoğunluğu (TI) verilerinin türbin bazlı teknik
+              analizi.</p>
+          </div>
+          <div class="detail-export-toolbar" aria-label="Rapor dışa aktarım araçları">
+            <a class="back-to-center-btn" id="backToTurbulenceCenter" href="./turbulence-center.html">
+              <span aria-hidden="true">←</span> Türbülans Merkezine Dön
+            </a>
+            <button class="report-export-btn excel-btn" id="exportExcelReportBtn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="8" y1="13" x2="16" y2="13" />
+                <line x1="8" y1="17" x2="16" y2="17" />
+              </svg>
+              <span>Excel Raporu İndir (.xlsx)</span>
+            </button>
+            <button class="report-export-btn pdf-btn" id="exportPdfReportBtn" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9V2h12v7" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+              </svg>
+              <span>PDF Raporu Çıkar (.pdf)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="turbulence-card detail-switcher-card">
+          <div class="detail-switcher-header">
+            <div>
+              <p class="panel-kicker">KKTC Rüzgâr Koridoru Türbin Seçimi</p>
+              <strong>İncelenen Türbini Değiştir (WT-01 – WT-19)</strong>
+            </div>
+            <span class="report-status-feedback" id="reportExportFeedback" role="status" aria-live="polite"></span>
+          </div>
+          <div class="detail-turbine-switcher" id="detailTurbineButtons" role="group"
+            aria-label="Detay analizi yapılacak türbin seçimi"></div>
+        </div>
+
+        <section class="risk-alert risk-low detail-hero-alert" id="detailRiskBanner" aria-live="polite">
+          <div class="risk-alert-icon" aria-hidden="true">!</div>
+          <div class="risk-alert-copy">
+            <span class="risk-alert-label" id="detailRiskHeadline">Analiz yükleniyor</span>
+            <p class="risk-alert-message" id="detailRiskSummary"></p>
+            <span class="risk-alert-meta" id="detailRiskMeta"></span>
+          </div>
+          <span class="demo-pill" id="detailRiskBadgePill">IEC 61400-1 ANALİZİ</span>
+        </section>
+
+        <div class="detail-kpi-strip" aria-label="Türbin konum ve telemetri özet göstergeleri">
+          <article class="detail-kpi-card">
+            <span class="detail-kpi-label">Türbin &amp; Rüzgâr Koridoru</span>
+            <strong class="detail-kpi-value" id="detailRegionValue">—</strong>
+            <small class="detail-kpi-sub" id="detailCoordsValue">—</small>
+          </article>
+          <article class="detail-kpi-card">
+            <span class="detail-kpi-label">Son Telemetri Ölçümü (KKTC)</span>
+            <strong class="detail-kpi-value" id="detailUpdatedTimeValue">—</strong>
+            <small class="detail-kpi-sub" id="detailAgoValue">—</small>
+          </article>
+          <article class="detail-kpi-card">
+            <span class="detail-kpi-label">Baskın Akış &amp; Maks. Rüzgâr</span>
+            <strong class="detail-kpi-value" id="detailPeakWindValue">—</strong>
+            <small class="detail-kpi-sub" id="detailPeakGustValue">—</small>
+          </article>
+          <article class="detail-kpi-card">
+            <span class="detail-kpi-label">Maksimum Türbülans Yoğunluğu</span>
+            <strong class="detail-kpi-value" id="detailMaxTiValue">—</strong>
+            <small class="detail-kpi-sub" id="detailValidCountValue">—</small>
+          </article>
+        </div>
+
+        <div class="detail-main-grid">
+          <section class="turbulence-card detail-decision-card" aria-labelledby="detailDecisionHeading">
+            <div class="card-heading">
+              <div>
+                <p class="panel-kicker">Karar destek ve koruma protokolü</p>
+                <h2 id="detailDecisionHeading">Otonom Mühendislik Değerlendirmesi</h2>
+              </div>
+              <span class="risk-badge risk-low" id="detailOverallRiskBadge">Düşük risk</span>
+            </div>
+            <dl class="explanation-list detail-explanation-list">
+              <div>
+                <dt>Riski oluşturan yönler</dt>
+                <dd id="detailRiskDirections">—</dd>
+              </div>
+              <div>
+                <dt>Ölçüm temelli nedenler</dt>
+                <dd id="detailRiskReasons">—</dd>
+              </div>
+              <div>
+                <dt>Önerilen otonom önlem</dt>
+                <dd id="detailRecommendation">—</dd>
+              </div>
+              <div>
+                <dt>Mühendislik gerekçesi</dt>
+                <dd id="detailRationale">—</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="turbulence-card detail-structural-card" aria-labelledby="detailStructuralHeading">
+            <div class="card-heading">
+              <div>
+                <p class="panel-kicker">Yapısal dijital ikiz parametreleri</p>
+                <h2 id="detailStructuralHeading">Yaw, Kanat ve Teleskopik Kule Durumu</h2>
+              </div>
+              <span class="simulation-only-tag" id="detailOperatingBadge">AKTİF KORUMA</span>
+            </div>
+            <div class="detail-structural-grid">
+              <article class="detail-param-box">
+                <span>Mevcut Nacelle / Yaw Açısı</span>
+                <strong id="detailCurrentYaw">245° · Güneybatı</strong>
+                <small>Aktif rüzgâr koridoru hizalaması</small>
+              </article>
+              <article class="detail-param-box">
+                <span>Önerilen Optimum Yaw Açısı</span>
+                <strong id="detailSuggestedYaw">225° · Güneybatı</strong>
+                <small>Yapısal yük dengeleme açısı</small>
+              </article>
+              <article class="detail-param-box">
+                <span>Rotor Devri &amp; Kanat Pitch</span>
+                <strong id="detailRotorPitch">12 RPM · 0° Pitch</strong>
+                <small id="detailBladeStageText">3. Kademe · Normal çalışma</small>
+              </article>
+              <article class="detail-param-box">
+                <span>3 Kademeli Teleskopik Kule</span>
+                <strong id="detailTowerStatus">%100 Açık (Katman 1-2-3)</strong>
+                <small id="detailTowerNote">Tam yükseklik · Maksimum rüzgâr hasadı</small>
+              </article>
+            </div>
+            <div class="detail-action-bar">
+              <a class="primary-button detail-action-link" id="applyInCenterLink"
+                href="./turbulence-center.html?turbine=WT-07">Türbülans Merkezinde Önlem Uygula</a>
+              <a class="secondary-button detail-action-link" href="./simulasyon-merkezi.html">3D Rüzgâr Çiftliğinde
+                Görüntüle</a>
+            </div>
+          </section>
+        </div>
+
+        <section class="turbulence-card detail-table-card" aria-labelledby="detailDirectionsHeading">
+          <div class="card-heading detail-table-heading">
+            <div>
+              <p class="panel-kicker">8 yönlü çevre sensör ağı (25 km yarıçap)</p>
+              <h2 id="detailDirectionsHeading">Yön Bazlı Telemetri ve Türbülans Matrisi</h2>
+              <p class="section-intro">Seçili türbinin 25 km çevresindeki 8 meteoroloji ve anemometre istasyonundan
+                alınan anlık ölçümler.</p>
+            </div>
+            <div class="detail-table-export-actions">
+              <button class="secondary-button small" id="exportAllTurbinesExcelBtn" type="button">📊 Tüm Türbinleri
+                Excel'e Aktar (WT-01–WT-19)</button>
+            </div>
+          </div>
+          <div class="table-shell">
+            <table class="turbulence-history-table detail-directions-table">
+              <thead>
+                <tr>
+                  <th>Yön</th>
+                  <th>Risk seviyesi</th>
+                  <th>Ortalama hız</th>
+                  <th>Maks. hamle</th>
+                  <th>Hız değişimi</th>
+                  <th>Türbülans (TI)</th>
+                  <th>Akış / Yön sapması</th>
+                  <th>Ölçüm saati (KKTC)</th>
+                  <th>Teknik değerlendirme</th>
+                </tr>
+              </thead>
+              <tbody id="detailDirectionsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </main>
+    <footer class="app-footer"><span>© 2026 RüzgarGülü - Powered by AKKA Soft</span><span>Rüzgâr Enerjisi İzleme ve
+        Kontrol Sistemi · KKTC
+        Saha Telemetrisi</span></footer>
+  </div>
+  <script type="module" src="./js/header-notifications.js?v=20261030-3"></script>
+  <script type="module" src="./js/turbulence-detail.js?v=20261030-3"></script>
+</body>
+
+</html>
