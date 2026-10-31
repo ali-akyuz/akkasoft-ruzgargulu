@@ -209,6 +209,7 @@ class AkkaSoftAiAssistant {
             <button type="button" class="akka-ai-chip" data-query="Gece arbitraj ve hidrojen durumu nedir?">🔋 Gece Arbitrajı &amp; H₂</button>
             <button type="button" class="akka-ai-chip" data-query="Rüzgâr yönü ve hızı nasıl?">💨 Rüzgâr Akışı</button>
             <button type="button" class="akka-ai-chip" data-query="Kuş göç radarı ve çevre durumu nedir?">🦅 Kuş Radarı</button>
+            <button type="button" class="akka-ai-chip" data-query="KIB-TEK blackout ve şebeke kurtarma durumu nedir?">⚡ Black Start &amp; Şebeke</button>
             <button type="button" class="akka-ai-chip" data-query="Finansal gelir ve kâr durumu nedir?">💰 Gelir &amp; Finans</button>
             <button type="button" class="akka-ai-chip" data-query="3D dijital ikiz ve simülasyonu aç">🎮 3D Simülasyon</button>
             <button type="button" class="akka-ai-chip" data-query="Bana en yakın türbin hangisi?">📍 En Yakın Türbin</button>
@@ -391,6 +392,17 @@ class AkkaSoftAiAssistant {
 
   generateResponse(query) {
     const q = query.toLowerCase().trim();
+
+    // Blackout & Otonom Black Start Şebeke Kurtarma
+    if (q.includes('blackout') || q.includes('black start') || q.includes('çöküş') || q.includes('şebeke kurtarma') || q.includes('karanlık ada') || q.includes('sentetik atalet')) {
+      return `
+        ⚡ <strong>KIB-TEK BLACKOUT &amp; OTONOM BLACK START SİSTEMİ:</strong><br/>
+        • <strong>Ada Şebeke Mimarisi:</strong> KKTC enterkonnektesiz izole bir adadır. Teknecik santrali devre dışı kaldığında şebeke frekansı 46,2 Hz'e düşerek tüm ada elektriksiz kalır (Blackout).<br/>
+        • <strong>Yapay Zeka Black Start Protokolü:</strong> 19 Rüzgâr türbini <em>Grid-Forming Inverter (VSM)</em> moduna geçerek sıfırdan referans voltaj üretir ve şehirlere (Teknecik ➔ Lefkoşa ➔ Girne ➔ Mağusa) kademeli enerji verir.<br/>
+        • <strong>Frekans Kilitlenme Süresi:</strong> 7,2 Saniye içinde 50,00 Hz nominal frekansa kilitlenir.<br/>
+        <button type="button" class="akka-welcome-opt-btn" onclick="document.getElementById('blackoutSimBtn')?.click()" style="margin-top:6px; background:#4f46e5; color:#fff; border-color:#818cf8;">⚡ Blackout &amp; Şebeke Kurtarma Simülatörünü Aç</button>
+      `;
+    }
 
     // Kuş Göç Radarı & Otonom Koruma
     if (q.includes('kuş') || q.includes('radar') || q.includes('göç') || q.includes('turna') || q.includes('leylek') || q.includes('çevre') || q.includes('biyoçeşitlilik') || q.includes('identiflight')) {
