@@ -1,0 +1,541 @@
+/* ==========================================================================
+   AKKA Soft AI - Akıllı Rüzgâr & SCADA Karar Destek Asistanı
+   Yuvarlak sağ alt açılış butonu (FAB) & Glassmorphism Chat Paneli
+   ========================================================================== */
+
+:root {
+  --akka-ai-primary: #0284c7;
+  --akka-ai-gradient: linear-gradient(135deg, #0284c7 0%, #2563eb 50%, #6366f1 100%);
+  --akka-ai-glow: rgba(37, 99, 235, 0.35);
+  --akka-ai-bg: rgba(255, 255, 255, 0.96);
+  --akka-ai-border: rgba(226, 232, 240, 0.85);
+  --akka-ai-text: #0f172a;
+  --akka-ai-sub: #475569;
+  --akka-ai-bot-bubble: #f1f5f9;
+  --akka-ai-user-bubble: linear-gradient(135deg, #0284c7, #2563eb);
+}
+
+/* --------------------------------------------------------------------------
+   1. Floating Action Button (FAB) - Sağ Alt Yuvarlak Açılış Butonu
+   -------------------------------------------------------------------------- */
+.akka-ai-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  background: var(--akka-ai-gradient);
+  box-shadow: 0 10px 28px var(--akka-ai-glow), 0 0 0 4px rgba(56, 189, 248, 0.22);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.24s ease;
+  user-select: none;
+  outline: none;
+}
+
+.akka-ai-fab:hover {
+  transform: translateY(-3px) scale(1.06);
+  box-shadow: 0 14px 34px rgba(37, 99, 235, 0.5), 0 0 0 6px rgba(56, 189, 248, 0.3);
+}
+
+.akka-ai-fab:active {
+  transform: translateY(1px) scale(0.96);
+}
+
+.akka-ai-fab-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.akka-ai-emblem-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.akka-ai-fab:hover .akka-ai-emblem-svg {
+  transform: rotate(35deg) scale(1.1);
+}
+
+.akka-ai-fab.is-open .akka-ai-fab-icon {
+  transform: rotate(90deg);
+}
+
+.akka-ai-fab-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  background: #10b981;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+  letter-spacing: 0.04em;
+  animation: akka-ai-pulse 2s infinite ease-in-out;
+}
+
+.akka-ai-fab-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(56, 189, 248, 0.4);
+  animation: akka-ai-ripple 2.4s infinite cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+@keyframes akka-ai-ripple {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes akka-ai-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* --------------------------------------------------------------------------
+   2. Chat Penceresi (Glassmorphism Window)
+   -------------------------------------------------------------------------- */
+.akka-ai-window {
+  position: fixed;
+  bottom: 94px;
+  right: 24px;
+  width: 390px;
+  max-width: calc(100vw - 32px);
+  height: 580px;
+  max-height: calc(100vh - 120px);
+  border-radius: 20px;
+  border: 1px solid var(--akka-ai-border);
+  background: var(--akka-ai-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px) scale(0.96);
+  transform-origin: bottom right;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.akka-ai-window.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+/* Header */
+.akka-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.akka-ai-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.akka-ai-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: var(--akka-ai-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  position: relative;
+}
+
+.akka-ai-avatar svg {
+  width: 22px;
+  height: 22px;
+  color: #ffffff;
+}
+
+.akka-ai-title-wrap strong {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  font-weight: 750;
+  color: #ffffff;
+}
+
+.akka-ai-status-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+.akka-ai-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+  animation: akka-ai-pulse 1.8s infinite;
+}
+
+.akka-ai-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.akka-ai-btn-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.16s ease;
+}
+
+.akka-ai-btn-icon:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+/* Body / Messages */
+.akka-ai-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scroll-behavior: smooth;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.akka-ai-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.akka-ai-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* Pinned Quick Action Bar above footer */
+.akka-ai-quick-bar {
+  padding: 7px 12px 5px;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  flex-shrink: 0;
+}
+
+.akka-ai-chips-wrap {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.akka-ai-chips-wrap::-webkit-scrollbar {
+  height: 3px;
+}
+
+.akka-ai-chips-wrap::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.akka-ai-chip {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid #bae6fd;
+  background: #f0f9ff;
+  color: #0369a1;
+  font-size: 0.72rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.akka-ai-chip:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+/* Inline Welcome Options inside the initial message */
+.akka-welcome-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.akka-welcome-opt-btn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 7px 11px;
+  border-radius: 8px;
+  border: 1px solid #bae6fd;
+  background: #ffffff;
+  color: #0369a1;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  text-align: left;
+}
+
+.akka-welcome-opt-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateX(3px);
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.22);
+}
+
+/* Chat Messages */
+.akka-msg {
+  display: flex;
+  gap: 10px;
+  max-width: 90%;
+  animation: akka-fade-in 0.22s ease-out forwards;
+}
+
+@keyframes akka-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.akka-msg.is-user {
+  margin-left: auto;
+  flex-direction: row-reverse;
+}
+
+.akka-msg-bubble {
+  padding: 11px 14px;
+  border-radius: 16px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  position: relative;
+  word-break: break-word;
+}
+
+.akka-msg.is-bot .akka-msg-bubble {
+  background: var(--akka-ai-bot-bubble);
+  color: var(--akka-ai-text);
+  border-top-left-radius: 4px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+}
+
+.akka-msg.is-user .akka-msg-bubble {
+  background: var(--akka-ai-user-bubble);
+  color: #ffffff;
+  border-top-right-radius: 4px;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+
+.akka-msg-time {
+  display: block;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  margin-top: 4px;
+  text-align: right;
+}
+
+.akka-msg.is-user .akka-msg-time {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.akka-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--akka-ai-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.akka-msg-avatar svg {
+  width: 15px;
+  height: 15px;
+  color: #ffffff;
+}
+
+/* Metric pills inside bot replies */
+.akka-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #e0f2fe;
+  color: #0369a1;
+  margin: 2px 0;
+}
+
+.akka-metric-pill.alert {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.akka-metric-pill.success {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+/* Typing Indicator */
+.akka-typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 14px;
+  background: var(--akka-ai-bot-bubble);
+  border-radius: 16px;
+  border-top-left-radius: 4px;
+  width: fit-content;
+}
+
+.akka-typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #94a3b8;
+  animation: akka-typing 1.4s infinite ease-in-out;
+}
+
+.akka-typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.akka-typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes akka-typing {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-5px); background: #0284c7; }
+}
+
+/* Input Area */
+.akka-ai-footer {
+  padding: 12px 14px;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.akka-ai-input {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-size: 0.82rem;
+  color: #0f172a;
+  outline: none;
+  background: #f8fafc;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  font-family: inherit;
+}
+
+.akka-ai-input:focus {
+  background: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.akka-ai-send-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--akka-ai-gradient);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+.akka-ai-send-btn:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 14px rgba(37, 99, 235, 0.42);
+}
+
+.akka-ai-send-btn:active {
+  transform: scale(0.94);
+}
+
+.akka-ai-send-btn svg {
+  width: 17px;
+  height: 17px;
+  display: block;
+  margin: 0;
+  transform: translate(-1px, 1px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .akka-ai-window {
+    right: 12px;
+    bottom: 84px;
+    width: calc(100vw - 24px);
+    height: 75vh;
+  }
+  .akka-ai-fab {
+    bottom: 16px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+  }
+}
+
