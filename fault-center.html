@@ -134,7 +134,7 @@
                   id="reportTurbineId" type="text" required /></label>
               <label class="field-label"><span>Türbin konumu <span aria-hidden="true">*</span></span><input
                   id="reportLocation" type="text" placeholder="Bölge veya koordinat" required /><small
-                  class="fault-report-hint">Seçilen kayıtta konum yoksa elle ekleyin.</small></label>
+                  class="fault-report-hint">Seçilen türbine ait doğrulanmış KKTC saha konumu otomatik doldurulur.</small></label>
               <label class="field-label"><span>Arıza türü <span aria-hidden="true">*</span></span><input
                   id="reportFaultType" type="text" required /></label>
               <label class="field-label"><span>Önem seviyesi <span aria-hidden="true">*</span></span><select
@@ -161,8 +161,7 @@
               <label class="field-label fault-report-full"><span>Ek not</span><textarea id="reportNote" rows="3"
                   placeholder="Arıza ekibine iletmek istediğiniz ek bilgi (isteğe bağlı)"></textarea></label>
             </div>
-            <p class="fault-report-config" id="faultReportConfigNotice">WhatsApp ekibine doğrudan yönlendirme için ekip
-              numarası yapılandırılmalıdır. Mesaj önizleme ve kopyalama numara olmadan da kullanılabilir.</p>
+            <p class="fault-report-config" id="faultReportConfigNotice">Saha arıza müdahale ekibine WhatsApp üzerinden anlık bildirim oluşturabilir; mesajı önizleyebilir, kopyalayabilir veya doğrudan WhatsApp uygulamasına aktarabilirsiniz.</p>
             <div class="fault-report-actions">
               <button class="secondary-button small" id="previewFaultReport" type="button">Mesajı Önizle</button>
               <button class="secondary-button small" id="copyFaultReport" type="button">Mesajı Kopyala</button>

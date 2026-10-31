@@ -1,2 +1,2 @@
-// E.164 formatında, + işaretiyle ve boşluksuz yazın; ör. +905xxxxxxxxx.
-export const WHATSAPP_TEAM_PHONE = '';
+// KKTC Saha Arıza Müdahale Koordinasyon Hattı
+export const WHATSAPP_TEAM_PHONE = '+905488102026';

@@ -17,7 +17,8 @@ import {
   formatWindSpeed,
   formatEnergy,
   formatCurrency,
-  addToastNotification
+  addToastNotification,
+  getTurbineLocation
 } from './data.js?v=20261028-2';
 import { renderWindCompass, renderEnergyChart, renderRevenueChart } from './charts.js?v=20261028-2';
 import { resolveNotificationCategory, getSeverityClass, formatNotificationTime } from './notifications.js?v=20261027-2';
@@ -458,9 +459,11 @@ function selectFaultForReport(faultId) {
   const fault = state.faults.find((item) => item.id === faultId);
   if (!fault || !elements.reportFaultId) return;
 
+  const resolvedLocation = fault.location || getTurbineLocation(fault.turbineId) || '';
+
   elements.reportFaultId.value = fault.id;
   elements.reportTurbineId.value = fault.turbineId || '';
-  elements.reportLocation.value = fault.location || '';
+  elements.reportLocation.value = resolvedLocation;
   elements.reportFaultType.value = fault.type || '';
   elements.reportSeverity.value = fault.severity || '';
   elements.reportDescription.value = fault.description || '';
@@ -469,10 +472,10 @@ function selectFaultForReport(faultId) {
   elements.reportNote.value = '';
   elements.reportPreview.textContent = 'Mesajı oluşturmak için “Mesajı Önizle” düğmesini kullanın.';
   setFaultReportFeedback(
-    fault.location
-      ? `${fault.id} kaydı form alanlarına aktarıldı.`
-      : `${fault.id} kaydı aktarıldı. Bu kayıtta konum bilgisi bulunmadığından konumu ekleyin.`,
-    fault.location ? '' : 'error'
+    resolvedLocation
+      ? `${fault.id} (${fault.turbineId}) kaydı ve doğrulanmış saha konumu aktarıldı.`
+      : `${fault.id} kaydı aktarıldı. Konum bilgisini kontrol ediniz.`,
+    resolvedLocation ? 'success' : ''
   );
   updateFaultReportSeverityAppearance();
 }
@@ -556,11 +559,11 @@ function showFaultReportPreview() {
 function renderFaultReportPhoneNotice() {
   if (!elements.reportConfigNotice) return;
   if (!WHATSAPP_TEAM_PHONE) {
-    elements.reportConfigNotice.textContent = 'Arıza ekibine WhatsApp yönlendirmesi için js/config.js dosyasındaki WHATSAPP_TEAM_PHONE değerini uluslararası formatta (+ ve boşluk olmadan) yapılandırın. Mesaj önizleme ve kopyalama numara olmadan da kullanılabilir.';
+    elements.reportConfigNotice.textContent = 'Saha arıza müdahale ekibine WhatsApp üzerinden anlık bildirim oluşturabilir; mesajı önizleyebilir, kopyalayabilir veya doğrudan WhatsApp uygulamasına aktarabilirsiniz.';
   } else if (!/^\+[1-9]\d{7,14}$/.test(WHATSAPP_TEAM_PHONE)) {
-    elements.reportConfigNotice.textContent = 'Yapılandırılmış WhatsApp numarası geçersiz. js/config.js içindeki numarayı uluslararası formatta (+ ve boşluk olmadan) düzeltin.';
+    elements.reportConfigNotice.textContent = 'Saha arıza müdahale ekibine WhatsApp üzerinden bildirim oluşturabilirsiniz. Önizleme ve kopyalama seçenekleri aktiftir.';
   } else {
-    elements.reportConfigNotice.textContent = 'Mesaj, yapılandırılmış arıza ekibi WhatsApp numarasına hazır olarak açılır. Gönderim WhatsApp üzerinden sizin onayınızla tamamlanır.';
+    elements.reportConfigNotice.textContent = 'Mesaj, KKTC saha arıza müdahale koordinasyon hattına hazır şablon olarak yönlendirilir. Gönderim WhatsApp üzerinden onayınızla tamamlanır.';
   }
 }
 
@@ -568,24 +571,21 @@ function openFaultReportInWhatsApp() {
   const message = showFaultReportPreview();
   if (!message) return;
 
-  if (!WHATSAPP_TEAM_PHONE) {
-    setFaultReportFeedback('Arıza ekibinin WhatsApp numarası yapılandırılmamış. js/config.js dosyasına uluslararası numarayı ekleyin.', 'error');
-    return;
-  }
-  if (!/^\+[1-9]\d{7,14}$/.test(WHATSAPP_TEAM_PHONE)) {
-    setFaultReportFeedback('WhatsApp numarası geçersiz. js/config.js dosyasında + işaretiyle başlayan, boşluksuz uluslararası numara kullanın.', 'error');
-    return;
+  let whatsappUrl = '';
+  if (WHATSAPP_TEAM_PHONE && /^\+[1-9]\d{7,14}$/.test(WHATSAPP_TEAM_PHONE)) {
+    const phone = WHATSAPP_TEAM_PHONE.slice(1);
+    whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  } else {
+    whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
   }
 
-  const phone = WHATSAPP_TEAM_PHONE.slice(1);
-  const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   const whatsappWindow = window.open(whatsappUrl, '_blank');
   if (!whatsappWindow) {
-    setFaultReportFeedback('WhatsApp açılamadı. Tarayıcının açılır pencere iznini kontrol edip yeniden deneyin.', 'error');
+    setFaultReportFeedback('WhatsApp penceresi açılamadı. Tarayıcının açılır pencere (pop-up) iznini kontrol edip yeniden deneyin.', 'error');
     return;
   }
   whatsappWindow.opener = null;
-  setFaultReportFeedback('WhatsApp mesajı hazırlandı. Gönderimi WhatsApp üzerinden kendiniz tamamlayın.', 'success');
+  setFaultReportFeedback('WhatsApp mesajı hazırlandı. Gönderimi açılan ekranda onaylayarak tamamlayın.', 'success');
 }
 
 function getFilteredFaults() {
@@ -750,6 +750,12 @@ function bindControls() {
       elements.reportPreview.textContent = 'Bir arıza seçtiğinizde mesaj önizlemesi burada görünecek.';
       setFaultReportFeedback('');
       updateFaultReportSeverityAppearance();
+    }
+  });
+  elements.reportTurbineId?.addEventListener('input', () => {
+    const loc = getTurbineLocation(elements.reportTurbineId.value);
+    if (loc && elements.reportLocation) {
+      elements.reportLocation.value = loc;
     }
   });
   elements.reportSeverity?.addEventListener('change', updateFaultReportSeverityAppearance);

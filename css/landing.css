@@ -217,16 +217,28 @@ body.lp {
 }
 
 /* Hero görseli */
-.lp-hero-visual { position: relative; }
+.lp-hero-visual {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  justify-self: center;
+  margin: 0 auto;
+}
 
 .lp-sky {
   position: relative;
+  width: 100%;
   height: 440px;
   overflow: hidden;
   border-radius: 28px;
-  background: linear-gradient(180deg, #e3f1fb 0%, #f2f8fc 60%, #eef7f2 100%);
+  background: url("../assets/images/girişsayfafoto.jpg") center 55% / cover no-repeat;
   border: 1px solid var(--lp-line);
 }
+
+.lp-sky > .lp-sun,
+.lp-sky > .lp-cloud,
+.lp-sky > .lp-hills,
+.lp-sky > .lp-turbine { display: none; }
 
 .lp-sun {
   position: absolute;
@@ -310,20 +322,22 @@ body.lp {
   position: absolute;
   display: grid;
   gap: 2px;
-  padding: 14px 18px;
+  padding: 10px 14px;
   border: 1px solid var(--lp-line);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.96);
   box-shadow: var(--lp-shadow);
+  max-width: calc(100% - 32px);
+  box-sizing: border-box;
 }
-.lp-float-top { top: 28px; left: -24px; }
+.lp-float-top { top: 24px; left: 16px; }
 .lp-float-label { color: var(--lp-muted); font-size: 0.76rem; font-weight: 500; }
 .lp-float-top strong { font-size: 1.5rem; letter-spacing: -0.02em; }
 .lp-float-trend { color: var(--lp-green); font-size: 0.78rem; font-weight: 600; }
 
 .lp-float-bottom {
-  right: -18px;
-  bottom: 26px;
+  right: 16px;
+  bottom: 24px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -589,6 +603,7 @@ body.lp {
   .lp-impact,
   .lp-faq-wrap { grid-template-columns: 1fr; gap: 44px; }
   .lp-features { grid-template-columns: repeat(2, 1fr); }
+  .lp-hero-visual { justify-self: center; }
   .lp-float-top { left: 16px; }
   .lp-float-bottom { right: 16px; }
 }

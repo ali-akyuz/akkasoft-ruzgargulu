@@ -2,6 +2,34 @@ const STORAGE_KEY = 'windora-demo-state-v1';
 const DEFAULT_SALE_PRICE = 3;
 export const turbineIds = Array.from({ length: 19 }, (_, index) => `WT-${String(index + 1).padStart(2, '0')}`);
 const turbineOutputWeights = [0.92, 1.08, 0.97, 1.12, 0.89, 1.04, 0.95, 1.1, 0.99, 1.15, 0.91, 1.03, 0.88, 1.09, 0.96, 1.06, 0.93, 1.07, 0.86];
+
+export const TURBINE_LOCATIONS = {
+  'WT-01': 'Koruçam – Sadrazamköy Platosu, KKTC (35.3740° K, 32.9580° D - 185 m)',
+  'WT-02': 'Kayalar – Orga Güney Sırtı, KKTC (35.3460° K, 33.0380° D - 310 m)',
+  'WT-03': 'Çamlıbel – Hisarköy Rüzgâr Geçidi, KKTC (35.3080° K, 33.0760° D - 420 m)',
+  'WT-04': 'Lapta – Selvilitepe Ana Sırtı, KKTC (35.3180° K, 33.1580° D - 890 m)',
+  'WT-05': 'Alsancak – Karaman Dağ Hattı, KKTC (35.3090° K, 33.2280° D - 670 m)',
+  'WT-06': 'Yeşilırmak – Vouni Batı Sırtı, KKTC (35.1560° K, 32.7520° D - 260 m)',
+  'WT-07': 'Güzelyurt – Kalkanlı Rüzgâr Sahası, KKTC (35.2360° K, 33.0350° D - 245 m)',
+  'WT-08': 'Güzelyurt – Mevlevi Tepe Hattı, KKTC (35.1880° K, 32.9950° D - 190 m)',
+  'WT-09': 'Yılmazköy – Gönyeli Kuzey Sırtı, KKTC (35.2380° K, 33.2150° D - 340 m)',
+  'WT-10': 'Girne – Boğazköy Rüzgâr Geçidi, KKTC (35.2920° K, 33.2850° D - 580 m)',
+  'WT-11': 'Çatalköy – Buffavento Dağ Sırtı, KKTC (35.2840° K, 33.4080° D - 780 m)',
+  'WT-12': 'Değirmenlik – Alevkayası Sırtı, KKTC (35.2760° K, 33.5180° D - 740 m)',
+  'WT-13': 'Serdarlı – Ergenekon Rüzgâr Geçidi, KKTC (35.2650° K, 33.6150° D - 490 m)',
+  'WT-14': 'Esentepe – Beşparmak Doğu Sırtı, KKTC (35.3120° K, 33.6650° D - 520 m)',
+  'WT-15': 'Tatlısu – Mersinlik Dağ Sırtı, KKTC (35.3380° K, 33.7650° D - 540 m)',
+  'WT-16': 'Yeni İskele – Topçuköy Platosu, KKTC (35.3120° K, 33.8680° D - 210 m)',
+  'WT-17': 'Kantara Kalesi Yüksek Sırtı, KKTC (35.3880° K, 33.9220° D - 610 m)',
+  'WT-18': 'Büyükkonuk – Kumyalı Karpaz Sırtı, KKTC (35.4580° K, 34.0950° D - 230 m)',
+  'WT-19': 'Dipkarpaz – Yeni Erenköy Koridoru, KKTC (35.5680° K, 34.3150° D - 195 m)'
+};
+
+export function getTurbineLocation(turbineId) {
+  if (!turbineId) return '';
+  const normalized = String(turbineId).trim().toUpperCase();
+  return TURBINE_LOCATIONS[normalized] || '';
+}
 const baseFaults = [
   {
     id: 'FLT-2041',
@@ -296,8 +324,13 @@ export function loadState() {
 
   try {
     const parsed = JSON.parse(stored);
+    const rawFaults = Array.isArray(parsed.faults) ? parsed.faults : baseFaults;
+    const sanitizedFaults = rawFaults.map((fault) => ({
+      ...fault,
+      location: fault.location || getTurbineLocation(fault.turbineId) || ''
+    }));
     return {
-      faults: Array.isArray(parsed.faults) ? parsed.faults : baseFaults,
+      faults: sanitizedFaults,
       notifications: Array.isArray(parsed.notifications) ? parsed.notifications : baseNotifications,
       metrics: { ...demoState, ...(parsed.metrics || {}) },
       selectedPeriod: parsed.selectedPeriod || 'daily'

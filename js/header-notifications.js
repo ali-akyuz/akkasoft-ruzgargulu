@@ -132,6 +132,100 @@ const badge = document.getElementById('notificationBadge');
 const summary = document.getElementById('headerNotificationSummary');
 const markAllButton = document.getElementById('markAllNotificationsRead');
 
+const SOUND_PREF_KEY = 'windora-notification-sound-v1';
+let audioCtx = null;
+
+function isSoundEnabled() {
+  try {
+    return localStorage.getItem(SOUND_PREF_KEY) !== 'false';
+  } catch {
+    return true;
+  }
+}
+
+function getAudioContext() {
+  if (!audioCtx) {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (AudioCtx) {
+      audioCtx = new AudioCtx();
+    }
+  }
+  return audioCtx;
+}
+
+function unlockAudio() {
+  try {
+    const ctx = getAudioContext();
+    if (ctx && ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+  } catch {}
+}
+
+['click', 'pointerdown', 'keydown', 'touchstart'].forEach((eventName) => {
+  document.addEventListener(eventName, unlockAudio, { passive: true });
+});
+
+function playNotificationTone(ctx, freq, startTime, duration, peakGain) {
+  const osc1 = ctx.createOscillator();
+  const gain1 = ctx.createGain();
+  osc1.type = 'sine';
+  osc1.frequency.setValueAtTime(freq, startTime);
+
+  gain1.gain.setValueAtTime(0.0001, startTime);
+  gain1.gain.exponentialRampToValueAtTime(peakGain, startTime + 0.012);
+  gain1.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
+
+  osc1.connect(gain1);
+  gain1.connect(ctx.destination);
+  osc1.start(startTime);
+  osc1.stop(startTime + duration + 0.05);
+
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.type = 'sine';
+  osc2.frequency.setValueAtTime(freq * 2.5, startTime);
+
+  gain2.gain.setValueAtTime(0.0001, startTime);
+  gain2.gain.exponentialRampToValueAtTime(peakGain * 0.22, startTime + 0.008);
+  gain2.gain.exponentialRampToValueAtTime(0.0001, startTime + duration * 0.55);
+
+  osc2.connect(gain2);
+  gain2.connect(ctx.destination);
+  osc2.start(startTime);
+  osc2.stop(startTime + duration * 0.55 + 0.05);
+}
+
+export function playNotificationSound(severity = 'info') {
+  if (!isSoundEnabled()) return;
+  try {
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') {
+      ctx.resume().catch(() => {});
+    }
+
+    const now = ctx.currentTime;
+
+    if (severity === 'critical') {
+      // Kritik Alarm: 3 kademeli berrak uyarı melodisi (G5 -> C6 -> E6)
+      playNotificationTone(ctx, 784.00, now, 0.16, 0.22);
+      playNotificationTone(ctx, 1046.50, now + 0.11, 0.20, 0.25);
+      playNotificationTone(ctx, 1318.51, now + 0.22, 0.35, 0.28);
+    } else if (severity === 'warning') {
+      // Saha Uyarısı: 2 kademeli sıcak çan tonu (E5 -> B5)
+      playNotificationTone(ctx, 659.25, now, 0.18, 0.20);
+      playNotificationTone(ctx, 987.77, now + 0.12, 0.30, 0.24);
+    } else {
+      // Rutin Bildirim: Yumuşak kristal çift ton (D5 -> A5)
+      playNotificationTone(ctx, 587.33, now, 0.16, 0.18);
+      playNotificationTone(ctx, 880.00, now + 0.10, 0.28, 0.22);
+    }
+  } catch (err) {
+    // Autoplay koruması veya kısıtlarda sessiz devam
+  }
+}
+
 let previewEl = null;
 let previewTimer = null;
 
@@ -226,6 +320,37 @@ function ensurePreviewStyles() {
       background: #eef5fb;
       color: #102a43;
     }
+    .notification-live-preview-sound-tag {
+      font-size: 0.72rem;
+      margin-left: auto;
+      margin-right: 4px;
+      opacity: 0.85;
+      user-select: none;
+    }
+    .notification-sound-toggle {
+      margin-left: auto;
+      border: 1px solid var(--border, #cde2f3);
+      border-radius: 999px;
+      background: #ffffff;
+      color: #102a43;
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 5px 9px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      transition: all 0.2s ease;
+    }
+    .notification-sound-toggle:hover {
+      background: #f0f7fd;
+      border-color: #93c5fd;
+      transform: scale(1.05);
+    }
+    .notification-sound-toggle.is-muted {
+      opacity: 0.55;
+      background: #f8fafc;
+    }
   `;
   document.head.appendChild(style);
 }
@@ -259,6 +384,8 @@ function showNotificationPreview(notification) {
   const el = ensurePreviewElement();
   if (!el) return;
 
+  playNotificationSound(notification.severity || 'info');
+
   if (button) {
     button.classList.remove('is-ringing');
     void button.offsetWidth;
@@ -277,6 +404,7 @@ function showNotificationPreview(notification) {
     <div class="notification-live-preview-body">
       <div class="notification-live-preview-kicker">
         <span>🔔 ${severityLabel} · ${notification.turbineId || 'Saha'}</span>
+        <span class="notification-live-preview-sound-tag" title="Bildirim sesi çaldı">🔊</span>
       </div>
       <strong class="notification-live-preview-title"></strong>
       <span class="notification-live-preview-meta">${resolveNotificationCategory(notification.category)} · Şimdi güncellendi (KKTC)</span>
@@ -318,6 +446,42 @@ let initialReloadedNotification = null;
 })();
 
 if (button && panel && list && badge && summary && markAllButton) {
+  let soundToggle = document.getElementById('notificationSoundToggle');
+  if (!soundToggle && markAllButton && markAllButton.parentNode) {
+    soundToggle = document.createElement('button');
+    soundToggle.id = 'notificationSoundToggle';
+    soundToggle.type = 'button';
+    soundToggle.className = 'notification-sound-toggle';
+    markAllButton.parentNode.insertBefore(soundToggle, markAllButton);
+  }
+
+  function updateSoundToggleUI() {
+    if (!soundToggle) return;
+    const enabled = isSoundEnabled();
+    soundToggle.textContent = enabled ? '🔊' : '🔇';
+    soundToggle.title = enabled
+      ? 'Bildirim sesi açık (Sessize almak için tıklayın)'
+      : 'Bildirim sesi kapalı (Açmak için tıklayın)';
+    soundToggle.setAttribute('aria-label', soundToggle.title);
+    soundToggle.classList.toggle('is-muted', !enabled);
+  }
+
+  if (soundToggle) {
+    soundToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const next = !isSoundEnabled();
+      try {
+        localStorage.setItem(SOUND_PREF_KEY, String(next));
+      } catch {}
+      updateSoundToggleUI();
+      if (next) {
+        unlockAudio();
+        playNotificationSound('info');
+      }
+    });
+    updateSoundToggleUI();
+  }
+
   const setOpen = (open) => {
     if (open) hideNotificationPreview();
     panel.hidden = !open;
