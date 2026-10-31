@@ -1,16 +1,311 @@
 <!doctype html>
-<html lang="tr" class="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RüzgarGülü | Akıllı Rüzgâr Enerjisi & Telemetri Platformu</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  </head>
-  <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-white">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description"
+    content="RüzgarGülü — Kuzey Kıbrıs'taki rüzgâr türbinlerini tek ekrandan izleyen, fırtınayı önceden fark edip türbini koruyan akıllı enerji yönetim sistemi." />
+  <meta name="theme-color" content="#f7fafc" />
+  <title>RüzgarGülü | Rüzgârı Anlayan Enerji Sistemi</title>
+  <script src="./js/auth.js?v=20261030-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/landing.css?v=20261030-4" />
+</head>
+
+<body class="lp">
+  <!-- Üst menü -->
+  <header class="lp-header" id="lpHeader">
+    <div class="lp-container lp-header-inner">
+      <a class="lp-brand" href="./index.html" aria-label="RüzgarGülü ana sayfa">
+        <img class="lp-brand-logo" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="lp-brand-name">RüzgarGülü</span>
+      </a>
+      <nav class="lp-nav" aria-label="Ana menü">
+        <a href="#nasil-calisir">Nasıl çalışır?</a>
+        <a href="#ozellikler">Özellikler</a>
+        <a href="#etki">Etkimiz</a>
+        <a href="#sss">Sık sorulanlar</a>
+      </nav>
+      <a class="lp-btn lp-btn-dark lp-btn-sm" data-login-link data-login-next="dashboard.html" href="./login.html">
+        <span data-cta-label>Giriş yap</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="lp-hero">
+      <div class="lp-container lp-hero-grid">
+        <div class="lp-hero-copy">
+          <span class="lp-pill"><i></i> Kuzey Kıbrıs · 19 türbin canlı izleniyor</span>
+          <h1>Rüzgârı önceden okuyan,<br /><em>türbini kendisi koruyan</em> enerji sistemi.</h1>
+          <p class="lp-lead">
+            RüzgarGülü; adadaki rüzgâr türbinlerini tek ekrandan izler, 25 km uzaktaki fırtınayı önceden fark eder ve
+            türbini zarar görmeden güvenli konuma alır. Daha az arıza, daha fazla temiz enerji.
+          </p>
+          <div class="lp-hero-actions">
+            <a class="lp-btn lp-btn-primary" data-login-link data-login-next="dashboard.html" href="./login.html">
+              Hemen incele <span aria-hidden="true">→</span>
+            </a>
+            <a class="lp-btn lp-btn-ghost" href="#nasil-calisir">Nasıl çalıştığını gör</a>
+          </div>
+          <ul class="lp-hero-notes" aria-label="Öne çıkanlar">
+            <li>Kurulum gerektirmez</li>
+            <li>Tarayıcıdan çalışır</li>
+            <li>Excel &amp; PDF rapor</li>
+          </ul>
+        </div>
+
+        <div class="lp-hero-visual" aria-hidden="true">
+          <div class="lp-sky">
+            <span class="lp-sun"></span>
+            <span class="lp-cloud lp-cloud-1"></span>
+            <span class="lp-cloud lp-cloud-2"></span>
+
+            <svg class="lp-hills" viewBox="0 0 600 200" preserveAspectRatio="none">
+              <path d="M0 140 C120 90 220 120 320 100 C420 80 500 110 600 95 L600 200 L0 200 Z" fill="#d6ebe1" />
+              <path d="M0 170 C140 130 260 160 380 140 C480 125 540 150 600 140 L600 200 L0 200 Z" fill="#c2e2d2" />
+            </svg>
+
+            <div class="lp-turbine lp-turbine-1">
+              <div class="lp-rotor"><span></span><span></span><span></span></div>
+              <div class="lp-mast"></div>
+            </div>
+            <div class="lp-turbine lp-turbine-2">
+              <div class="lp-rotor"><span></span><span></span><span></span></div>
+              <div class="lp-mast"></div>
+            </div>
+            <div class="lp-turbine lp-turbine-3">
+              <div class="lp-rotor"><span></span><span></span><span></span></div>
+              <div class="lp-mast"></div>
+            </div>
+          </div>
+
+          <div class="lp-float-card lp-float-top">
+            <span class="lp-float-label">Anlık üretim</span>
+            <strong>2,48 MW</strong>
+            <span class="lp-float-trend">↗ %12 daha verimli</span>
+          </div>
+          <div class="lp-float-card lp-float-bottom">
+            <span class="lp-dot-ok"></span>
+            <div>
+              <strong>Tüm türbinler güvende</strong>
+              <span id="lpClock">KKTC saati · güncelleniyor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Güven şeridi -->
+    <section class="lp-strip" aria-label="Sistem kapsamı">
+      <div class="lp-container lp-strip-grid">
+        <div><strong>19</strong><span>Rüzgâr türbini</span></div>
+        <div><strong>25 km</strong><span>Erken uyarı mesafesi</span></div>
+        <div><strong>8 yön</strong><span>Sürekli rüzgâr ölçümü</span></div>
+        <div><strong>7/24</strong><span>Kesintisiz izleme</span></div>
+      </div>
+    </section>
+
+    <!-- Nasıl çalışır -->
+    <section class="lp-section" id="nasil-calisir">
+      <div class="lp-container">
+        <div class="lp-section-head">
+          <span class="lp-eyebrow">Nasıl çalışır?</span>
+          <h2>Üç basit adımda güvenli ve verimli enerji</h2>
+          <p>Karmaşık teknik altyapıyı arka planda biz yönetiyoruz; siz yalnızca sonucu görüyorsunuz.</p>
+        </div>
+
+        <ol class="lp-steps">
+          <li class="lp-step">
+            <span class="lp-step-num">1</span>
+            <h3>Rüzgârı dinler</h3>
+            <p>Her türbinin çevresindeki 8 farklı noktadan rüzgârın hızı ve yönü sürekli ölçülür.</p>
+          </li>
+          <li class="lp-step">
+            <span class="lp-step-num">2</span>
+            <h3>Riski önceden görür</h3>
+            <p>Fırtına ya da ani rüzgâr dalgası türbine ulaşmadan dakikalar önce fark edilir.</p>
+          </li>
+          <li class="lp-step">
+            <span class="lp-step-num">3</span>
+            <h3>Türbini korur</h3>
+            <p>Türbin rüzgâra göre döner, gerekirse kulesini alçaltarak güvenli konuma geçer.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Özellikler -->
+    <section class="lp-section lp-section-soft" id="ozellikler">
+      <div class="lp-container">
+        <div class="lp-section-head">
+          <span class="lp-eyebrow">Özellikler</span>
+          <h2>İhtiyacınız olan her şey tek bir yerde</h2>
+          <p>Saha ekibinden yöneticiye kadar herkesin kolayca kullanabileceği sade araçlar.</p>
+        </div>
+
+        <div class="lp-features">
+          <a class="lp-feature" data-login-link data-login-next="dashboard.html" href="./login.html">
+            <span class="lp-icon lp-icon-blue">
+              <svg viewBox="0 0 24 24"><path d="M12 21s-7-5.4-7-11a7 7 0 1 1 14 0c0 5.6-7 11-7 11Z" /><circle cx="12" cy="10" r="2.5" /></svg>
+            </span>
+            <h3>Canlı saha haritası</h3>
+            <p>Tüm türbinleri harita üzerinde görün, size olan uzaklığını öğrenin ve tek tıkla yol tarifi alın.</p>
+            <span class="lp-link">Haritayı aç →</span>
+          </a>
+
+          <a class="lp-feature" data-login-link data-login-next="turbulence-center.html" href="./login.html">
+            <span class="lp-icon lp-icon-amber">
+              <svg viewBox="0 0 24 24"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h8" /></svg>
+            </span>
+            <h3>Fırtına erken uyarısı</h3>
+            <p>Rüzgâr tehlikeli hâle gelmeden önce uyarı alın; sistem size ne yapılması gerektiğini önersin.</p>
+            <span class="lp-link">Uyarı merkezini aç →</span>
+          </a>
+
+          <a class="lp-feature" data-login-link data-login-next="simulasyon-merkezi.html" href="./login.html">
+            <span class="lp-icon lp-icon-green">
+              <svg viewBox="0 0 24 24"><path d="M12 12V3M12 12l7.8 4.5M12 12l-7.8 4.5M12 12v9" /><circle cx="12" cy="12" r="1.6" /></svg>
+            </span>
+            <h3>3D türbin simülasyonu</h3>
+            <p>Türbinin nasıl döndüğünü ve kendini nasıl koruduğunu üç boyutlu olarak izleyin.</p>
+            <span class="lp-link">Simülasyonu aç →</span>
+          </a>
+
+          <a class="lp-feature" data-login-link data-login-next="analytics.html" href="./login.html">
+            <span class="lp-icon lp-icon-blue">
+              <svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 15l3-3 3 2 5-6" /></svg>
+            </span>
+            <h3>Üretim ve gelir analizi</h3>
+            <p>Günlük, aylık ve yıllık enerji üretimini ve bunun karşılığı olan geliri net grafiklerle görün.</p>
+            <span class="lp-link">Analizi aç →</span>
+          </a>
+
+          <a class="lp-feature" data-login-link data-login-next="fault-center.html" href="./login.html">
+            <span class="lp-icon lp-icon-amber">
+              <svg viewBox="0 0 24 24"><path d="M12 3 21 20H3L12 3Zm0 6v5m0 3h.01" /></svg>
+            </span>
+            <h3>Arıza takibi</h3>
+            <p>Sorunları önem sırasına göre listeleyin ve saha ekibine WhatsApp üzerinden anında bildirin.</p>
+            <span class="lp-link">Arıza merkezini aç →</span>
+          </a>
+
+          <a class="lp-feature" data-login-link data-login-next="turbulence-detail.html?turbine=WT-07" href="./login.html">
+            <span class="lp-icon lp-icon-green">
+              <svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" /><path d="M14 3v6h6M8 13h8M8 17h5" /></svg>
+            </span>
+            <h3>Tek tıkla rapor</h3>
+            <p>Her türbin için hazır raporu Excel veya PDF olarak indirin, paylaşın ve arşivleyin.</p>
+            <span class="lp-link">Raporları aç →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Etki -->
+    <section class="lp-section" id="etki">
+      <div class="lp-container lp-impact">
+        <div class="lp-impact-copy">
+          <span class="lp-eyebrow lp-eyebrow-green">Etkimiz</span>
+          <h2>Adamız için daha temiz bir gelecek</h2>
+          <p>
+            Rüzgârdan üretilen her kilovat, fosil yakıtla çalışan santrallerin yükünü azaltır. Bu da daha temiz hava,
+            daha az ithal yakıt ve daha güçlü bir ekonomi demek.
+          </p>
+          <a class="lp-btn lp-btn-ghost" data-login-link data-login-next="analytics.html" href="./login.html">
+            Detaylı etkiyi incele →
+          </a>
+        </div>
+
+        <div class="lp-impact-cards">
+          <div class="lp-impact-card">
+            <span class="lp-impact-emoji" aria-hidden="true">🌿</span>
+            <div>
+              <strong>39,7 ton</strong>
+              <span>Günlük önlenen CO₂ salımı</span>
+            </div>
+          </div>
+          <div class="lp-impact-card">
+            <span class="lp-impact-emoji" aria-hidden="true">💧</span>
+            <div>
+              <strong>14.605 litre</strong>
+              <span>Günlük tasarruf edilen yakıt</span>
+            </div>
+          </div>
+          <div class="lp-impact-card">
+            <span class="lp-impact-emoji" aria-hidden="true">🛡️</span>
+            <div>
+              <strong>$11.200</strong>
+              <span>Günlük ülkede kalan döviz</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SSS -->
+    <section class="lp-section lp-section-soft" id="sss">
+      <div class="lp-container lp-faq-wrap">
+        <div class="lp-section-head lp-section-head-left">
+          <span class="lp-eyebrow">Sık sorulanlar</span>
+          <h2>Aklınıza takılanlar</h2>
+          <p>Başka bir sorunuz mu var? Sisteme giriş yaptıktan sonra tüm modülleri kendiniz deneyebilirsiniz.</p>
+        </div>
+
+        <div class="lp-faq">
+          <details open>
+            <summary>RüzgarGülü tam olarak ne yapar?</summary>
+            <p>Rüzgâr türbinlerinin üretimini, sağlığını ve çevresindeki rüzgâr koşullarını izler. Tehlikeli bir durum
+              yaklaştığında önceden uyarır ve türbinin kendini korumasını sağlar.</p>
+          </details>
+          <details>
+            <summary>"25 km erken uyarı" ne anlama geliyor?</summary>
+            <p>Her türbinin 25 km çevresindeki ölçüm noktaları rüzgârı sürekli takip eder. Böylece bir fırtına türbine
+              ulaşmadan önce fark edilir ve önlem almak için zaman kazanılır.</p>
+          </details>
+          <details>
+            <summary>Teleskopik kule nedir?</summary>
+            <p>Üç parçadan oluşan ve gerektiğinde iç içe geçerek alçalabilen bir kuledir. Çok sert rüzgârda türbin
+              kendini alçaltarak hasar görme riskini en aza indirir.</p>
+          </details>
+          <details>
+            <summary>Kullanmak için bir şey kurmam gerekiyor mu?</summary>
+            <p>Hayır. RüzgarGülü tamamen tarayıcı üzerinden çalışır; giriş yapmanız yeterlidir.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Son çağrı -->
+    <section class="lp-cta">
+      <div class="lp-container lp-cta-inner">
+        <div>
+          <h2>Rüzgârın gücünü birlikte yönetelim.</h2>
+          <p>Tüm modüllere tek bir giriş ile hemen ulaşın.</p>
+        </div>
+        <a class="lp-btn lp-btn-light" data-login-link data-login-next="dashboard.html" href="./login.html">
+          <span data-cta-label>Hemen başla</span> <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="lp-footer">
+    <div class="lp-container lp-footer-inner">
+      <div class="lp-brand lp-brand-footer">
+        <img class="lp-brand-logo" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="lp-brand-name">RüzgarGülü</span>
+      </div>
+      <span>© 2026 RüzgarGülü · Rüzgâr Enerjisi İzleme ve Kontrol Sistemi</span>
+      <a class="lp-footer-credit" href="https://www.instagram.com/akka.soft/" target="_blank" rel="noopener noreferrer">Powered by AKKA Soft</a>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/landing.js?v=20261030-2"></script>
+</body>
+
 </html>

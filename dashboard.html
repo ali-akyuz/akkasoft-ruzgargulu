@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RüzgarGülü — Rüzgâr Enerjisi İzleme ve Kontrol Sistemi." />
+  <meta name="theme-color" content="#f5fafe" />
+  <title>Genel Bakış | RüzgarGülü</title>
+  <script src="./js/auth.js?v=20261029-2"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css?v=desktop-20261030-3" />
+  <link rel="stylesheet" href="./css/components.css?v=desktop-20261029-2" />
+  <link rel="stylesheet" href="./css/responsive.css?v=desktop-20261029-6" />
+  <link rel="stylesheet" href="./css/turbine-map.css?v=20261030-4" />
+</head>
+
+<body data-page="overview">
+  <div class="app-shell">
+    <header class="topbar" aria-label="Uygulama üst bilgisi">
+      <a class="brand" href="./dashboard.html" aria-label="RüzgarGülü genel bakış">
+        <img class="brand-logo-mark" src="./assets/images/logorüzgargülü.png" alt="" />
+        <span class="brand-copy"><strong>RüzgarGülü</strong><span>Rüzgâr Enerjisi İzleme ve Kontrol
+            Sistemi</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Ana menü">
+        <a class="nav-link active" href="./dashboard.html" aria-current="page">Genel Bakış</a>
+        <a class="nav-link" href="./analytics.html">Enerji Analizi</a>
+        <a class="nav-link" href="./fault-center.html">Arıza Kontrol Merkezi</a>
+        <a class="nav-link" href="./turbulence-center.html">Türbülans Merkezi</a>
+        <a class="nav-link" href="./simulasyon-merkezi.html">Simülasyon Merkezi</a>
+      </nav>
+      <div class="topbar-actions" aria-label="Sistem bilgileri">
+        <div class="notification-dropdown">
+          <button class="icon-button notification-button" type="button" aria-label="Bildirimleri aç"
+            aria-expanded="false" aria-controls="headerNotificationPanel">
+            <span class="icon-bell" aria-hidden="true">🔔</span><span class="badge" id="notificationBadge">0</span>
+          </button>
+          <section class="notification-popover" id="headerNotificationPanel" aria-label="Bildirimler" hidden>
+            <header class="notification-popover-header">
+              <div>
+                <h2>Bildirimler</h2>
+                <p id="headerNotificationSummary">Güncel uyarılar</p>
+              </div>
+              <button class="notification-mark-all" id="markAllNotificationsRead" type="button">Tümünü okundu
+                işaretle</button>
+            </header>
+            <ul class="notification-popover-list" id="headerNotificationList" aria-live="polite"></ul>
+          </section>
+        </div>
+        <span class="login-button welcome-user" id="welcomeUser">Hoş Geldin, AKKA Soft</span>
+        <button class="logout-button" type="button" data-logout>Çıkış</button>
+      </div>
+    </header>
+
+    <main class="page-content">
+      <div class="local-file-notice" id="localFileNotice" role="status" hidden>
+        <strong>Yerel dosya modu</strong>
+        <span>Video ve simülasyonların çalışması için proje klasöründeki <code>run-local.bat</code> dosyasını
+          çalıştırın.</span>
+      </div>
+      <div class="section overview-section">
+        <section class="overview-snapshot" aria-labelledby="snapshot-title">
+          <div class="section-heading-row">
+            <div>
+              <p class="eyebrow cool">Saha özeti</p>
+              <h2 id="snapshot-title">Operasyonlara genel bakış</h2>
+            </div>
+          </div>
+          <div class="overview-metrics">
+            <article class="metric-card">
+              <div class="metric-topline"><span class="metric-label">Anlık üretim</span><span class="metric-icon"
+                  aria-hidden="true">⚡</span></div>
+              <strong class="metric-value" id="overviewPower">2,48 MW</strong>
+              <p class="metric-footer">Saha genelinde üretilen güç</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-topline"><span class="metric-label">Aktif türbin</span><span class="metric-icon"
+                  aria-hidden="true">◉</span></div>
+              <strong class="metric-value" id="overviewTurbines">17 / 19</strong>
+              <p class="metric-footer">Türbinler çalışır durumda</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-topline"><span class="metric-label">Bugünkü üretim</span><span class="metric-icon"
+                  aria-hidden="true">↗</span></div>
+              <strong class="metric-value" id="overviewEnergy">18.420 kWh</strong>
+              <p class="metric-footer">Günlük toplam enerji</p>
+            </article>
+            <article class="metric-card">
+              <div class="metric-topline"><span class="metric-label">Açık arıza</span><span
+                  class="metric-icon warning-icon" aria-hidden="true">!</span></div>
+              <strong class="metric-value" id="overviewOpenFaults">0</strong>
+              <p class="metric-footer">Çözüm bekleyen kayıt</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="site-map-section" aria-labelledby="dashboard-map-heading">
+          <div class="site-map-shell">
+            <div class="site-map-topbar">
+              <div class="site-map-title-group">
+                <p class="eyebrow cool">KKTC COĞRAFİ SAHA İZLEME &amp; CANLI KONUM</p>
+                <h2 id="dashboard-map-heading">Kıbrıs Türbin Dağılımı ve Anlık Konum Haritası</h2>
+                <p class="site-map-subtitle">Tarayıcıdan alınan <strong>anlık konumunuzu</strong> baz alarak KKTC
+                  genelindeki (Beşparmak, Lapta, Koruçam, Güzelyurt, İskele ve Karpaz) 19 rüzgâr türbinine olan
+                  mesafenizi ve üretim durumunu canlı gösterir.</p>
+              </div>
+              <div class="site-map-controls">
+                <button class="map-locate-btn" id="locateUserBtn" type="button">
+                  <span class="map-Locate-dot"></span>
+                  <span>📍 Anlık Konumumu Bul</span>
+                </button>
+                <button class="map-secondary-btn" id="cyprusOverviewBtn" type="button">
+                  🗺️ Tüm Kıbrıs Görünümü
+                </button>
+                <div class="map-layer-switcher" role="group" aria-label="Harita görünümü">
+                  <button class="map-layer-btn active" type="button" data-map-layer="street">Harita</button>
+                  <button class="map-layer-btn" type="button" data-map-layer="satellite">Uydu</button>
+                  <button class="map-layer-btn" type="button" data-map-layer="topo">Arazi</button>
+                </div>
+                <div class="map-status-filters" role="group" aria-label="Türbin durum filtresi">
+                  <button class="map-filter-btn active" type="button" data-map-filter="all">Tümü (19)</button>
+                  <button class="map-filter-btn" type="button" data-map-filter="active">Aktif (15)</button>
+                  <button class="map-filter-btn" type="button" data-map-filter="warning">Uyarı (3)</button>
+                  <button class="map-filter-btn" type="button" data-map-filter="critical">Kritik (1)</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="site-map-body">
+              <div class="site-map-canvas-wrap">
+                <div class="map-floating-status">
+                  <i></i>
+                  <span id="mapLocationStatusText">Anlık konum bilgisi alınıyor...</span>
+                </div>
+                <div class="site-map-canvas" id="turbineMapCanvas" role="region"
+                  aria-label="KKTC türbin konum haritası"></div>
+                <div class="map-legend-overlay">
+                  <span class="legend-item"><i class="legend-dot user"></i> Sizin Anlık Konumunuz</span>
+                  <span class="legend-item"><i class="legend-dot active"></i> Aktif Türbin</span>
+                  <span class="legend-item"><i class="legend-dot warning"></i> Uyarı / İnceleme</span>
+                  <span class="legend-item"><i class="legend-dot critical"></i> Kritik Alarm</span>
+                </div>
+              </div>
+
+              <aside class="site-map-sidebar" aria-label="Seçili türbin detayları ve liste">
+                <div class="map-selected-card">
+                  <div class="map-selected-header">
+                    <strong id="mapSelectedTitle">WT-07 · Merkez Rüzgâr Koridoru</strong>
+                    <span class="map-selected-badge critical" id="mapSelectedBadge">Kritik Arıza</span>
+                  </div>
+                  <p class="map-selected-coords" id="mapSelectedCoords">📍 Koordinatlar hesaplanıyor...</p>
+                  <div class="map-selected-metrics">
+                    <div class="map-metric-box">
+                      <span>Anlık Üretim</span>
+                      <strong id="mapSelectedPower">2,83 MW</strong>
+                    </div>
+                    <div class="map-metric-box">
+                      <span>Rüzgâr Hızı</span>
+                      <strong id="mapSelectedWind">10,6 m/s</strong>
+                    </div>
+                    <div class="map-metric-box">
+                      <span>Jeneratör Sıcaklığı</span>
+                      <strong id="mapSelectedTemp">82,4 °C</strong>
+                    </div>
+                    <div class="map-metric-box">
+                      <span>Ulaşım / Mesafe</span>
+                      <strong id="mapSelectedDistance">1,82 km</strong>
+                    </div>
+                  </div>
+                  <div class="map-selected-actions">
+                    <a class="map-action-btn maps-route-btn" id="mapActionDirections" href="https://www.google.com/maps"
+                      target="_blank" rel="noopener noreferrer">🗺️ Yol Tarifi</a>
+                    <a class="map-action-btn primary" id="mapActionSim" href="./simulasyon-merkezi.html">3D
+                      Simülasyon</a>
+                    <a class="map-action-btn" id="mapActionFault" href="./fault-center.html">Arıza Kaydına Git</a>
+                  </div>
+                </div>
+                <div class="map-turbine-list-header">
+                  <span>SAHADAKİ TÜRBİNLER</span>
+                  <span id="mapTurbineCountLabel">19 / 19 TÜRBİN</span>
+                </div>
+                <ul class="map-turbine-list" id="mapTurbineList"></ul>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="revenue-quick-card" aria-labelledby="revenue-quick-title">
+          <div class="section-heading-row compact-section-heading">
+            <div>
+              <p class="eyebrow cool">Finansal özet</p>
+              <h2 id="revenue-quick-title">Gelir Özeti</h2>
+            </div>
+          </div>
+          <div class="revenue-quick-grid">
+            <article class="revenue-quick-stat"><span>Bugünkü tahmini gelir</span><strong
+                id="overviewTodayRevenue">₺0,00</strong></article>
+            <article class="revenue-quick-stat"><span>Bu haftanın tahmini geliri</span><strong
+                id="overviewWeeklyRevenue">₺0,00</strong></article>
+            <article class="revenue-quick-stat"><span>Bu ayın tahmini geliri</span><strong
+                id="overviewMonthlyRevenue">₺0,00</strong></article>
+            <article class="revenue-quick-stat"><span>Seçilen satış fiyatı</span><strong id="overviewSalePrice">₺3,00 /
+                kWh</strong></article>
+          </div>
+          <a class="text-link" href="./analytics.html">Gelir Analizini Gör <span aria-hidden="true">→</span></a>
+        </section>
+
+        <div class="overview-lower-grid">
+          <section class="notification-panel" aria-labelledby="notification-panel-heading">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Saha gündemi</p>
+                <h2 id="notification-panel-heading">Önemli bildirimler</h2>
+              </div>
+              <div class="notification-filters" aria-label="Bildirim filtresi">
+                <button class="filter-chip active" data-filter="all" type="button">Tümü</button>
+                <button class="filter-chip" data-filter="critical" type="button">Kritik</button>
+                <button class="filter-chip" data-filter="warning" type="button">Uyarılar</button>
+                <button class="filter-chip" data-filter="info" type="button">Bilgiler</button>
+              </div>
+            </div>
+            <ul class="notification-list" id="notificationList" aria-live="polite"></ul>
+          </section>
+          <aside class="critical-panel" aria-labelledby="critical-title">
+            <div class="panel-header">
+              <div>
+                <p class="panel-kicker">Öncelikli takip</p>
+                <h2 id="critical-title">Kritik olaylar</h2>
+              </div>
+              <span class="critical-count" id="criticalCount">0</span>
+            </div>
+            <ul class="incident-list" id="criticalIncidents" aria-live="polite"></ul>
+            <a class="text-link" href="./fault-center.html">Tüm arızaları görüntüle <span
+                aria-hidden="true">→</span></a>
+          </aside>
+        </div>
+      </div>
+    </main>
+    <footer class="app-footer"><span>© 2026 RüzgarGülü - Powered by AKKA Soft</span><span>Rüzgâr Enerjisi İzleme ve
+        Kontrol Sistemi ·
+        Simülasyon verisi</span></footer>
+  </div>
+  <div id="toastContainer" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('localFileNotice').hidden = false;
+    }
+  </script>
+  <script type="module" src="./js/header-notifications.js?v=20261030-3"></script>
+  <script type="module" src="./js/app.js?v=20261030-4"></script>
+</body>
+
+</html>
