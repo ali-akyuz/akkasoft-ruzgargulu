@@ -231,7 +231,7 @@ body.lp {
   height: 440px;
   overflow: hidden;
   border-radius: 28px;
-  background: url("../assets/images/girişsayfafoto.jpg") center 55% / cover no-repeat;
+  background: url("../assets/images/girişsayfafoto.jpeg") center 55% / cover no-repeat;
   border: 1px solid var(--lp-line);
 }
 
